@@ -137,17 +137,15 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        int board_size = b.size();
         Boolean has_empty_space = false;
-
-        for (int i = 0; i < board_size; i++) {
-            for (int j = 0; j < board_size; j++) {
+        for (int i = 0; i < b.size(); i++) {
+            for (int j = 0; j < b.size(); j++) {
                 if (b.tile(i, j) == null) {
                     has_empty_space = true;
+                    break;
                 }
             }
         }
-
         return has_empty_space;
     }
 
@@ -157,19 +155,16 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
-        int board_size = b.size();
         Boolean has_max_tile = false;
-
-        for (int i = 0; i < board_size; i++) {
-            for (int j = 0; j < board_size; j++) {
+        for (int i = 0; i < b.size(); i++) {
+            for (int j = 0; j < b.size(); j++) {
                 Tile current_tile = b.tile(i, j);
                 if (current_tile != null && current_tile.value() == MAX_PIECE) {
                     has_max_tile = true;
+                    break;
                 }
             }
         }
-
         return has_max_tile;
     }
 
@@ -180,10 +175,84 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
+        if (emptySpaceExists(b) || canMerge(b)) {
+            return true;
+        }
         return false;
     }
 
+    /**
+     * To judge whether there exists any two-tiles within the given board
+     * can be merged into one.
+     */
+    private static Boolean canMerge(Board b) {
+        Boolean can_merge = false;
+        int[][] numerical_tile = copyNumericalBoardWithSentinel(b);
+        /* Judgement
+         * 
+         * For a particular tile, just scan its right-side neighbor
+         * and below-side neighbor to check if they can merge.
+         * 
+         * Because of the calculation of scan can be seen commutative
+         * (or symmetric, whatever), aka, once a tile can merge its
+         * right-side neighbor, it is equivalent to say the right one
+         * can merge its left-side neighbor. So, check one side is enough
+         * 
+         * The existence of sentinels ensures our for-loop won't out of
+         * range
+        */
+        for (int i = 0; i < b.size(); i++) {
+            for (int j = 0; j < b.size(); j++) {
+                int right_neighbor = numerical_tile[i][j + 1];
+                int below_neighbor = numerical_tile[i + 1][j];
+                if (numerical_tile[i][j] == right_neighbor
+                    || numerical_tile[i][j] == below_neighbor) {
+                        can_merge = true;
+                        break;
+                    }
+            }
+        }
+        return can_merge;
+    }
+
+    /**
+     * Generate a copy of board, but only numerical parts of tiles with
+     * the board with sentinels.
+     * For example, the board
+     * 
+     *      |   2|   4|   2|   4|
+     *      |  16|   2|   4|   2|
+     *      |   2|   4|   2|   4|
+     *      |   4|   2|   4|   2|    (4 * 4)
+     * 
+     *  will be copied and generated as 
+     * 
+     *    |   2|   4|   2|   4|  -1|
+     *    |  16|   2|   4|   2|  -1|
+     *    |   2|   4|   2|   4|  -1|
+     *    |   4|   2|   4|   2|  -1|
+     *    |  -1|  -1|  -1|  -1|  -1|   (5 * 5)
+     * 
+     *  where -1 acts as sentinel
+    */
+    private static int[][] copyNumericalBoardWithSentinel(Board b) {
+        final int copy_board_size = b.size() + 1;
+        int[][] copied_board = new int[copy_board_size][copy_board_size];
+        
+        for (int i = 0; i < copy_board_size; i++) {
+            for (int j = 0; j < copy_board_size; j++) {
+                // non-sentinel tile
+                if (i < b.size() && j < b.size()) {
+                    copied_board[i][j] = b.tile(i, j).value();
+                }
+                else {
+                    copied_board[i][j] = -1;
+                }
+            }
+        }
+
+        return copied_board;
+    }
 
     @Override
      /** Returns the model as a string, used for debugging. */
