@@ -180,8 +180,8 @@ public class Model extends Observable {
                 // be aware of that a after-merged tile couldn't merge again
                 if (!merged[i][real_t_col] && scanned_tile.value() == t.value()) {
                     pos = real_t_col * 10 + i;
-                    // merge should not be greedy
                 }
+                // merge should not be greedy
                 break;
             }
         }
