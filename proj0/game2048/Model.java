@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: Episode Zhang
+ *  @author Episode Zhang
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -111,12 +111,8 @@ public class Model extends Observable {
         changed = false;
         // set board view perspective
         board.setViewingPerspective(side);
-        // !debug info
-        System.out.println("current view " + side.toString() + " as North");
-        System.out.println(board.toString());
-        // !
         // mark whether a tile comes from merging.
-        int size = size();
+        final int size = size();
         Boolean[][] already_merged = initializeArray(size, false);
         // Considering upward keyboard hit
         // Traverse for columns at first, then check by row
@@ -125,10 +121,6 @@ public class Model extends Observable {
             for (int row = size - 2; row >= 0; row--) {
                 Tile current_tile = tile(col, row);
                 int available_pos = farthestAvailableMove(current_tile, board, side, already_merged);
-                // !debug info
-                if (current_tile != null) System.out.println("current tile info: " + current_tile.toString());
-                System.out.println("available pos is " + available_pos);
-                // !
                 // valid circumstance
                 if (available_pos != -1) {
                     int available_col = available_pos / 10;
@@ -174,14 +166,9 @@ public class Model extends Observable {
         // non-null tile t
         // Get the real col, since method setViewingPerspective just serve
         // transformation of view but without any change to col or row of tile
-        // int col = t.col();
         int converted_coordinate = convertCoordinate(t, s);
         int real_t_col = converted_coordinate / 10;
         int real_t_row = converted_coordinate % 10;
-        // !debug info
-        System.out.println("current tile's col: " + real_t_col + " get by col.()");
-        System.out.println("current tile's row: " + real_t_row + " get by row.()");
-        // !
         for (int i = real_t_row + 1; i < b.size(); i++) {
             Tile scanned_tile = b.tile(real_t_col, i);
             if (scanned_tile == null ||
@@ -196,7 +183,6 @@ public class Model extends Observable {
     /** Convert a coordinate from original side.NORTH view into 
      *  corresponding new VIEW
      */
-    
     private int convertCoordinate(Tile t, Side s) {
         // first digit to store col, second digit to store row
         int coordinate = -1;
@@ -223,11 +209,10 @@ public class Model extends Observable {
         default:
             break;
         }
-
+        
         coordinate = col * 10 + row;
         return coordinate;
     }
-
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
@@ -243,7 +228,7 @@ public class Model extends Observable {
 
     /** Returns true if at least one space on the Board is empty.
      *  Empty spaces are stored as null.
-     * */
+     */
     public static boolean emptySpaceExists(Board b) {
         Boolean has_empty_space = false;
         for (int i = 0; i < b.size(); i++) {
