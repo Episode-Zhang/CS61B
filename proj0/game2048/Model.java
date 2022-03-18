@@ -169,7 +169,6 @@ public class Model extends Observable {
         int converted_coordinate = convertCoordinate(t, s);
         int real_t_col = converted_coordinate / 10;
         int real_t_row = converted_coordinate % 10;
-        // ! buggy cuz merge may leap its obstacle
         for (int i = real_t_row + 1; i < b.size(); i++) {
             Tile scanned_tile = b.tile(real_t_col, i);
             if (scanned_tile == null) {
