@@ -113,12 +113,67 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-
+        
+        // mark whether a tile comes from merging.
+        int size = this.board.size();
+        Boolean[][] already_merged = initializeArray(size, false);
+        // upward test
+        // traverse for columns, check row by row
+        for (int col = 0; col < size; col++) {
+            for (int row = size - 2; row >= 0; row--) {
+                Tile current_tile = this.board.tile(col, row);
+                int available_pos = farthestAvailableMove(current_tile, this.board, already_merged);
+                if (available_pos != -1) {
+                    int available_col = available_pos / 10;
+                    int available_row = available_pos % 10;
+                    // check if is a merge
+                    if (this.board.move(available_col, available_row, current_tile)) {
+                        this.score += this.board.tile(available_col, available_row).value();
+                        already_merged[available_row][available_col] = true;
+                    }
+                    changed = true;
+                }
+            }
+        }
         checkGameOver();
         if (changed) {
             setChanged();
         }
         return changed;
+    }
+    
+    /** Initialization for array ALREADYMERGED in TILT method*/
+    private Boolean[][] initializeArray(int size, Boolean initial_value) {
+        Boolean[][] array = new Boolean[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                array[i][j] = initial_value;
+            }
+        }
+        return array;
+    }
+
+    /** Searching for the farthest available movement of a tile in upward
+     *  direction. Return -1 iff there is no available movement
+     */
+    private int farthestAvailableMove(Tile t, Board b, Boolean[][] merged) {
+        /* pos to store the coordinate of the farthest available move
+           in the form of digits, first as COL and second as ROW*/
+        int pos = -1;
+        if (t == null) {
+            return pos;
+        }
+        // non-null tile
+        int col = t.col();
+        for (int i = t.row() + 1; i < b.size(); i++) {
+            Tile scanned_tile = b.tile(col, i);
+            if (scanned_tile == null ||
+            // a after-merged tile couldn't merge again
+            (!merged[i][col] && scanned_tile.value() == t.value())) {
+                pos = col * 10 + i;
+            }
+        }
+        return pos;
     }
 
     /** Checks if the game is over and sets the gameOver variable
@@ -200,16 +255,16 @@ public class Model extends Observable {
          * 
          * The existence of sentinels ensures our for-loop won't out of
          * range
-        */
+         */
         for (int i = 0; i < b.size(); i++) {
             for (int j = 0; j < b.size(); j++) {
                 int right_neighbor = numerical_tile[i][j + 1];
                 int below_neighbor = numerical_tile[i + 1][j];
-                if (numerical_tile[i][j] == right_neighbor
-                    || numerical_tile[i][j] == below_neighbor) {
-                        can_merge = true;
-                        break;
-                    }
+                if (numerical_tile[i][j] == right_neighbor || 
+                numerical_tile[i][j] == below_neighbor) {
+                    can_merge = true;
+                    break;
+                }
             }
         }
         return can_merge;
@@ -234,7 +289,7 @@ public class Model extends Observable {
      *    |  -1|  -1|  -1|  -1|  -1|   (5 * 5)
      * 
      *  where -1 acts as sentinel
-    */
+     */
     private static int[][] copyNumericalBoardWithSentinel(Board b) {
         final int copy_board_size = b.size() + 1;
         int[][] copied_board = new int[copy_board_size][copy_board_size];
