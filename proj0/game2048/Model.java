@@ -109,26 +109,33 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-
-        // TODO: Modify this.board (and perhaps this.score) to account
-        // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to true.
-        
+        // set board view perspective
+        board.setViewingPerspective(side);
+        // !debug info
+        System.out.println("current view " + side.toString() + " as North");
+        System.out.println(board.toString());
+        // !
         // mark whether a tile comes from merging.
-        int size = this.board.size();
+        int size = size();
         Boolean[][] already_merged = initializeArray(size, false);
-        // upward test
-        // traverse for columns, check row by row
+        // Considering upward keyboard hit
+        // Traverse for columns at first, then check by row
+        // The direction of row checking is from top to bottom(actually top is ignored, however).
         for (int col = 0; col < size; col++) {
             for (int row = size - 2; row >= 0; row--) {
-                Tile current_tile = this.board.tile(col, row);
-                int available_pos = farthestAvailableMove(current_tile, this.board, already_merged);
+                Tile current_tile = tile(col, row);
+                int available_pos = farthestAvailableMove(current_tile, board, side, already_merged);
+                // !debug info
+                if (current_tile != null) System.out.println("current tile info: " + current_tile.toString());
+                System.out.println("available pos is " + available_pos);
+                // !
+                // valid circumstance
                 if (available_pos != -1) {
                     int available_col = available_pos / 10;
                     int available_row = available_pos % 10;
                     // check if is a merge
-                    if (this.board.move(available_col, available_row, current_tile)) {
-                        this.score += this.board.tile(available_col, available_row).value();
+                    if (board.move(available_col, available_row, current_tile)) {
+                        score += tile(available_col, available_row).value();
                         already_merged[available_row][available_col] = true;
                     }
                     changed = true;
@@ -139,6 +146,7 @@ public class Model extends Observable {
         if (changed) {
             setChanged();
         }
+        board.setViewingPerspective(Side.NORTH);
         return changed;
     }
     
@@ -156,25 +164,70 @@ public class Model extends Observable {
     /** Searching for the farthest available movement of a tile in upward
      *  direction. Return -1 iff there is no available movement
      */
-    private int farthestAvailableMove(Tile t, Board b, Boolean[][] merged) {
+    private int farthestAvailableMove(Tile t, Board b, Side s, Boolean[][] merged) {
         /* pos to store the coordinate of the farthest available move
            in the form of digits, first as COL and second as ROW*/
         int pos = -1;
         if (t == null) {
             return pos;
         }
-        // non-null tile
-        int col = t.col();
-        for (int i = t.row() + 1; i < b.size(); i++) {
-            Tile scanned_tile = b.tile(col, i);
+        // non-null tile t
+        // Get the real col, since method setViewingPerspective just serve
+        // transformation of view but without any change to col or row of tile
+        // int col = t.col();
+        int converted_coordinate = convertCoordinate(t, s);
+        int real_t_col = converted_coordinate / 10;
+        int real_t_row = converted_coordinate % 10;
+        // !debug info
+        System.out.println("current tile's col: " + real_t_col + " get by col.()");
+        System.out.println("current tile's row: " + real_t_row + " get by row.()");
+        // !
+        for (int i = real_t_row + 1; i < b.size(); i++) {
+            Tile scanned_tile = b.tile(real_t_col, i);
             if (scanned_tile == null ||
             // a after-merged tile couldn't merge again
-            (!merged[i][col] && scanned_tile.value() == t.value())) {
-                pos = col * 10 + i;
+            (!merged[i][real_t_col] && scanned_tile.value() == t.value())) {
+                pos = real_t_col * 10 + i;
             }
         }
         return pos;
     }
+
+    /** Convert a coordinate from original side.NORTH view into 
+     *  corresponding new VIEW
+     */
+    
+    private int convertCoordinate(Tile t, Side s) {
+        // first digit to store col, second digit to store row
+        int coordinate = -1;
+        final int upper = size() - 1;
+        int col = 0, row = 0;
+        
+        switch (s) {
+        case NORTH:
+            col = t.col();
+            row = t.row();
+            break;
+        case SOUTH:
+            col = upper - t.col();
+            row = upper - t.row();
+            break;
+        case EAST:
+            col = upper - t.row();
+            row = t.col();
+            break;
+        case WEST:
+            col = t.row();
+            row = upper - t.col();
+            break;
+        default:
+            break;
+        }
+
+        coordinate = col * 10 + row;
+        return coordinate;
+    }
+
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
