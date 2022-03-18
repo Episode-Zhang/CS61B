@@ -181,8 +181,8 @@ public class Model extends Observable {
                 if (!merged[i][real_t_col] && scanned_tile.value() == t.value()) {
                     pos = real_t_col * 10 + i;
                     // merge should not be greedy
-                    break;
                 }
+                break;
             }
         }
         return pos;
