@@ -9,8 +9,10 @@ public class IntListExercises {
      * @param lst IntList from Lecture
      */
     public static void addConstant(IntList lst, int c) {
+        // Bug is that the last node will never be added with c since last.rest
+        // is always null. Below is fixed version
         IntList head = lst;
-        while (head.rest != null) {
+        while (head != null) { // head.rest != null to be original version
             head.first += c;
             head = head.rest;
         }
@@ -50,8 +52,10 @@ public class IntListExercises {
      *  the first digit of x.
      */
     public static boolean firstDigitEqualsLastDigit(int x) {
+        // Bug is that condition in while statement doesn't take 10, which should
+        // be taken, into account
         int lastDigit = x % 10;
-        while (x > 10) {
+        while (x >= 10) { // x > 10 to be original version
             x = x / 10;
         }
         int firstDigit = x % 10;
@@ -67,6 +71,8 @@ public class IntListExercises {
      */
     public static boolean squarePrimes(IntList lst) {
         // Base Case: we have reached the end of the list
+        // Bug is that or operator has the feature of short circuit, thus, the former
+        // operand should be recursive call.
         if (lst == null) {
             return false;
         }
@@ -77,6 +83,6 @@ public class IntListExercises {
             lst.first *= lst.first;
         }
 
-        return currElemIsPrime || squarePrimes(lst.rest);
+        return squarePrimes(lst.rest) || currElemIsPrime; // currElemIsPrime || squarePrimes(lst.rest) to be original version
     }
 }
