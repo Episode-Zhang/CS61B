@@ -5,7 +5,7 @@ import edu.princeton.cs.algs4.Stopwatch;
 /**
  * Created by hug.
  */
-public class StopwatchDemo {
+public class    StopwatchDemo {
     /** Computes the nth Fibonacci number using a slow naive recursive strategy.*/
     private static int fib(int n) {
         if (n < 0) {
