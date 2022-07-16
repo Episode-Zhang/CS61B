@@ -29,6 +29,8 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
         /**
          * To judge whether a LinkedListDeque is entirely visited.
+         *
+         * @return TRUE if a LinkedListDeque hasn't been entirely visited, otherwise, FALSE.
          */
         @Override
         public boolean hasNext() {
@@ -63,9 +65,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * Add an item to the front of a particular linkedlistdeque.
+     * Add an item to the front of a particular LinkedListDeque.
      *
-     * @param item: The item which is supposed to be added as first in linkedlistdeque.
+     * @param item: The item which is supposed to be added as first one in LinkedListDeque.
      */
     @Override
     public void addFirst(T item) {
@@ -76,9 +78,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * Add an item to the back of a particular linkedlistdeque.
+     * Add an item to the back of a particular LinkedListDeque.
      *
-     * @param item: The item which is supposed to be added as last in linkedlistdeque.
+     * @param item: The item which is supposed to be added as last in LinkedListDeque.
      */
     @Override
     public void addLast(T item) {
@@ -89,7 +91,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * To judge whether a linkedlistdeque has at least single item.
+     * To judge whether a LinkedListDeque has at least single item.
      *
      * @return TRUE if there is at least one item, otherwise FALSE.
      */
@@ -99,9 +101,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * Give size of a linkedlistdeque.
+     * Give size of a LinkedListDeque.
      *
-     * @return Size of a linkedlistdeque.
+     * @return Size of a LinkedListDeque.
      */
     @Override
     public int size() {
@@ -109,7 +111,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * Remove the first item of the linkedlistdeque.
+     * Remove the first item of the LinkedListDeque.
      *
      * @return The removed item value if there exists any item, otherwise, null.
      */
@@ -126,7 +128,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * Remove the last item of the linkedlistdeque.
+     * Remove the last item of the LinkedListDeque.
      *
      * @return The removed item value if there exists any item, otherwise, null.
      */
@@ -143,7 +145,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * Get corresponding item based on its index in linkedlistdeque.
+     * Get corresponding item based on its index in LinkedListDeque.
      *
      * @param index: Location of the item you want to get, beginning with 0.
      * @return Corresponding item value if there exists such an index, otherwise, null.
@@ -166,7 +168,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * Get corresponding item based on its index in linkedlistdeque but recursively.
+     * Get corresponding item based on its index in LinkedListDeque but recursively.
      *
      * @param index: Location of the item you want to get, beginning with 0.
      * @return Corresponding item value if there exists such an index, otherwise, null.
@@ -190,7 +192,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     /**
      * Handle method of public getRecursive version with current node memorized.
      *
-     * @param index: Location of the item you want to get, beginning with 0.
+     * @param index:        Location of the item you want to get, beginning with 0.
      * @param current_node: To memorized which current node is.
      * @return Corresponding Node with specified index.
      */
@@ -224,9 +226,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * To generate an iterator for this linkedlistdeque.
+     * To generate an iterator for this LinkedListDeque.
      *
-     * @return Iterator of the linkedlistdeque.
+     * @return Iterator of the LinkedListDeque.
      */
     @Override
     public Iterator<T> iterator() {
@@ -234,9 +236,10 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * To judge whether a given object(especially a linkedlistdeque) is equal to this linkedlistdeque.
+     * To judge whether a given object(especially a LinkedListDeque) is equal to this LinkedListDeque.
+     *
      * @param o: The given object
-     * @return   TRUE if o is linkedlistdeque which contains same items in same order.
+     * @return TRUE if o is LinkedListDeque which contains same items in same order to this.
      */
     @Override
     public boolean equals(Object o) {
@@ -258,5 +261,4 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         }
         return true;
     }
-
 }
