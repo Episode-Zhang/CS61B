@@ -28,7 +28,4 @@ public interface Deque<T> {
 
     // Get corresponding item. Return null if it doesn't exist.
     T get(int index);
-
-    // Generate an iterator of this
-    Iterator<T> iterator();
 }
