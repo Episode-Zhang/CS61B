@@ -321,9 +321,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         }
         // check items
         int myPos = Math.floorMod(phead() + 1, _capacity);
-        Iterator<T> anotherIter = another.iterator();
-        while (anotherIter.hasNext()) {
-            T item = anotherIter.next();
+        for (int i = 0; i < another.size(); i++) {
+            T item = another.get(i);
             if (!item.equals(_items[myPos])) {
                 return false;
             }

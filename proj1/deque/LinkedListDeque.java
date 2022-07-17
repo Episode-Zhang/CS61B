@@ -243,9 +243,8 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         }
         // Check items
         Node<T> myCurrentNode = _sentinel._next;
-        Iterator<T> anotherIter = another.iterator();
-        while (anotherIter.hasNext()) {
-            T item = anotherIter.next();
+        for (int i = 0; i < another.size(); i++) {
+            T item = another.get(i);
             if (!item.equals(myCurrentNode._item)) {
                 return false;
             }
