@@ -3,44 +3,6 @@ package deque;
 import java.util.Iterator;
 
 public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
-    // Iterator class
-    private class ArrayDequeIterator implements Iterator<T> {
-        private int _nowPos;
-        private int _steps;
-
-        /**
-         * Constructor of ArrayDequeIterator generator.
-         */
-        ArrayDequeIterator() {
-            _nowPos = Math.floorMod((phead() + 1), _capacity);
-            _steps = 0;
-        }
-
-        /**
-         * To judge whether an ArrayDeque is entirely visited.
-         *
-         * @return TRUE if an ArrayDeque hasn't been entirely visited, otherwise, FALSE.
-         */
-        @Override
-        public boolean hasNext() {
-            // (_nowPos != ptail()) && _size > 0
-            return _steps < _size;
-        }
-
-        /**
-         * Get the next item.
-         *
-         * @return The next item.
-         */
-        @Override
-        public T next() {
-            T value = _items[_nowPos];
-            _nowPos = Math.floorMod(_nowPos + 1, _capacity);
-            _steps += 1;
-            return value;
-        }
-    }
-
     // instance variables
     private T[] _items;
     private int _size;
@@ -291,6 +253,45 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         contents.deleteCharAt(contents.length() - 1);
         contents.append('\n');
         System.out.println(contents);
+    }
+
+    // Iterator class
+    private class ArrayDequeIterator implements Iterator<T> {
+        private int _nowPos;
+        private int _steps;
+
+        /**
+         * Constructor of ArrayDequeIterator generator.
+         */
+        ArrayDequeIterator() {
+            // Initial position starts from HEAD position.
+            _nowPos = Math.floorMod((phead() + 1), _capacity);
+            _steps = 0;
+        }
+
+        /**
+         * To judge whether an ArrayDeque is entirely visited.
+         *
+         * @return TRUE if an ArrayDeque hasn't been entirely visited, otherwise, FALSE.
+         */
+        @Override
+        public boolean hasNext() {
+            return _steps < _size;
+        }
+
+        /**
+         * Get the next item.
+         *
+         * @return The next item.
+         */
+        @Override
+        public T next() {
+            T value = _items[_nowPos];
+            // In natural order, that is from HEAD -> TAIL with index increased
+            _nowPos = Math.floorMod(_nowPos + 1, _capacity);
+            _steps += 1;
+            return value;
+        }
     }
 
     /**
