@@ -5,13 +5,13 @@ import java.util.Iterator;
 public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     // Iterator class
     private class ArrayDequeIterator implements Iterator<T> {
-        private int _now_pos;
+        private int _nowPos;
 
         /**
          * Constructor of ArrayDequeIterator generator.
          */
-        public ArrayDequeIterator() {
-            _now_pos = (phead() + 1) % _capacity;
+        ArrayDequeIterator() {
+            _nowPos = Math.floorMod((phead() + 1), _capacity);
         }
 
         /**
@@ -21,7 +21,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
          */
         @Override
         public boolean hasNext() {
-            return _now_pos != ptail() && _size > 0;
+            return _nowPos != ptail() && _size > 0;
         }
 
         /**
@@ -31,8 +31,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
          */
         @Override
         public T next() {
-            T value = _items[_now_pos];
-            _now_pos = (_now_pos + 1) % _capacity;
+            T value = _items[_nowPos];
+            _nowPos = Math.floorMod(_nowPos + 1, _capacity);
             return value;
         }
     }
@@ -132,7 +132,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
      * @return TRUE if capacity of _ITEMS need to expand or shrink, otherwise, FALSE.
      */
     private boolean resizable() {
-        return _size >= _capacity || (_size <= _capacity * USAGE_PERCENT && _size > 0);
+        return _size >= _capacity || (_size <= _capacity * USAGE_PERCENT && _size > 8);
     }
 
     /**
@@ -140,8 +140,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
      */
     private void resize() {
         if (!resizable()) {
-            throw new IllegalStateException("The Deque is resizing illegally, " +
-                    "please ensure call resize method after doing resizable check!");
+            throw new IllegalStateException("The Deque is resizing illegally, "
+                    + "please ensure call resize method after doing resizable check!");
         }
         if (phead() + 1 > ptail() - 1) {
             /* This situation is like
@@ -160,18 +160,19 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
              *    -> [1, x(tail), x, x, x, x, x(head), 2]    ! size <= capacity * USAGE_PERCENT !
              *    -> [2, 1, x(tail) , x(head)]
              */
-            int new_capacity = (_size >= _capacity ? _capacity * 2 : (int) (_capacity * USAGE_PERCENT * 2));
-            T[] new_items = (T[]) new Object[new_capacity];
+            int newCapacity = (_size >= _capacity ? _capacity * 2
+                    : (int) (_capacity * USAGE_PERCENT * 2));
+            T[] newItems = (T[]) new Object[newCapacity];
             // copy from items[phead() + 1 : _capacity - 1] (end_point included)
-            System.arraycopy(_items, _phead + 1, new_items, 0, _capacity - _phead - 1);
+            System.arraycopy(_items, phead() + 1, newItems, 0, _capacity - phead() - 1);
             // copy from items[0, ptail() - 1]
-            System.arraycopy(_items, 0, new_items, _capacity - _phead - 1, _ptail);
+            System.arraycopy(_items, 0, newItems, _capacity - phead() - 1, ptail());
             // reset _PHEAD and _PTAIL. !MUST NOT CHANGE THE ORDER
-            _ptail = _capacity - _phead + _ptail - 1;
-            _phead = new_capacity - 1;
+            _ptail = _capacity - phead() + ptail() - 1;
+            _phead = newCapacity - 1;
             // reset _items and _capacity
-            _items = new_items;
-            _capacity = new_capacity;
+            _items = newItems;
+            _capacity = newCapacity;
         } else if (phead() + 1 <= ptail() - 1) {
             /* This situation only has possibility of doing shrink, which is like
              *
@@ -180,17 +181,17 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
              *    -> [x, x, x(head), 1, 2, x(tail), x, x]    ! size <= capacity / 4 !
              *    -> [1, 2, x(tail) , x(head)]
              */
-            int new_capacity = _capacity / 2;
-            T[] new_items = (T[]) new Object[new_capacity];
-            System.arraycopy(_items, (phead() + 1) % _capacity,
-                    new_items, 0,
+            int newCapacity = _capacity / 2;
+            T[] newItems = (T[]) new Object[newCapacity];
+            System.arraycopy(_items, Math.floorMod(phead() + 1, _capacity),
+                    newItems, 0,
                     ptail() - phead() - 1);
             // reset _PHEAD and _PTAIL. !MUST NOT CHANGE THE ORDER
             _ptail = ptail() - phead() - 1;
-            _phead = new_capacity - 1;
+            _phead = newCapacity - 1;
             // reset _items and _capacity
-            _items = new_items;
-            _capacity = new_capacity;
+            _items = newItems;
+            _capacity = newCapacity;
         }
     }
 
@@ -250,9 +251,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (resizable()) {
             resize();
         }
-        int removed_position = (phead() + 1) % _capacity;
-        T value = _items[removed_position];
-        _items[removed_position] = null;
+        int removedPosition = Math.floorMod(phead() + 1, _capacity);
+        T value = _items[removedPosition];
+        _items[removedPosition] = null;
         _phead += 1;
         // The only item both to be the first item and the last item.
         if (_size == 1) {
@@ -276,9 +277,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (resizable()) {
             resize();
         }
-        int removed_position = (ptail() - 1) % _capacity;
-        T value = _items[removed_position];
-        _items[removed_position] = null;
+        int removedPosition = Math.floorMod(ptail() - 1, _capacity);
+        T value = _items[removedPosition];
+        _items[removedPosition] = null;
         _ptail -= 1;
         // The only item both to be the first item and the last item.
         if (_size == 1) {
@@ -288,16 +289,15 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return value;
     }
 
-
     /**
      * To judge whether an ArrayDeque has at least single item.
      *
      * @return TRUE if there is at least one item, otherwise FALSE.
-     */
+     *//*
     @Override
     public boolean isEmpty() {
         return _size == 0;
-    }
+    }*/
 
     /**
      * Give size of an ArrayDeque.
@@ -320,8 +320,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (index < 0 || index >= _size) {
             return null;
         }
-        int offested_index = (phead() + 1 + index) % _capacity;
-        return _items[offested_index];
+        int offsetIndex = Math.floorMod(phead() + 1 + index, _capacity);
+        return _items[offsetIndex];
     }
 
     /**
@@ -343,6 +343,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
      *
      * @return Iterator of the ArrayDeque.
      */
+    @Override
     public Iterator<T> iterator() {
         return new ArrayDequeIterator();
     }
@@ -350,26 +351,28 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     /**
      * To judge whether a given object(especially a ArrayDeque) is equal to this ArrayDeque.
      *
-     * @param o: The given object
+     * @param obj: The given object
      * @return TRUE if o is ArrayDeque which contains same items in same order to this.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object obj) {
         // Do previous checks
-        if (!(o instanceof ArrayDeque)) {
+        if (!(obj instanceof Deque)) {
             return false;
         }
-        ArrayDeque<T> another = (ArrayDeque<T>) o;
+        Deque<T> another = (Deque<T>) obj;
         if (_size != another.size()) {
             return false;
         }
         // check items
-        int my_pos = (phead() + 1) % _capacity;
-        for (T another_item : another) {
-            if (!another_item.equals(_items[my_pos])) {
+        int myPos = Math.floorMod(phead() + 1, _capacity);
+        Iterator<T> anotherIter = another.iterator();
+        while (anotherIter.hasNext()) {
+            T item = anotherIter.next();
+            if (!item.equals(_items[myPos])) {
                 return false;
             }
-            my_pos = (my_pos + 1) % _capacity;
+            myPos = Math.floorMod(myPos + 1, _capacity);
         }
         return true;
     }
