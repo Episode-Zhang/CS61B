@@ -6,12 +6,14 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     // Iterator class
     private class ArrayDequeIterator implements Iterator<T> {
         private int _nowPos;
+        private int _steps;
 
         /**
          * Constructor of ArrayDequeIterator generator.
          */
         ArrayDequeIterator() {
             _nowPos = Math.floorMod((phead() + 1), _capacity);
+            _steps = 0;
         }
 
         /**
@@ -21,7 +23,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
          */
         @Override
         public boolean hasNext() {
-            return _nowPos != ptail() && _size > 0;
+            // (_nowPos != ptail()) && _size > 0
+            return _steps < _size;
         }
 
         /**
@@ -33,6 +36,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         public T next() {
             T value = _items[_nowPos];
             _nowPos = Math.floorMod(_nowPos + 1, _capacity);
+            _steps += 1;
             return value;
         }
     }
@@ -44,6 +48,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private int _phead;
     private int _ptail;
     private static final double USAGE_PERCENT = 0.25;
+    private static final int RESIZE_FACTOR = 2;
+    private static final int MIN_CAPACITY = 8;
 
     /**
      * Constructor of ArrayDeque.
@@ -101,7 +107,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
          * 10. If we get that _PTAIL ≡ _PHEAD(mod _CAPACITY), then there must be array is of full
          *    size or empty.
          */
-        _capacity = 8;  // default capacity
+        _capacity = MIN_CAPACITY;  // default capacity
         _size = 0;
         _items = (T[]) new Object[_capacity];
         _phead = _capacity;
@@ -127,72 +133,21 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * Check whether array _ITEMS should be resized before add or remove operations.
-     *
-     * @return TRUE if capacity of _ITEMS need to expand or shrink, otherwise, FALSE.
-     */
-    private boolean resizable() {
-        return _size >= _capacity || (_size <= _capacity * USAGE_PERCENT && _size > 8);
-    }
-
-    /**
      * To adjust capacity of this array dynamically according to actual size.
      */
-    private void resize() {
-        if (!resizable()) {
-            throw new IllegalStateException("The Deque is resizing illegally, "
-                    + "please ensure call resize method after doing resizable check!");
+    private void resize(final int newCapacity) {
+        T[] newItem = (T[]) new Object[newCapacity];
+        // copied items in natural order from head to tail.
+        int i = 0;
+        for (T item : this) {
+            newItem[i++] = item;
         }
-        if (phead() + 1 > ptail() - 1) {
-            /* This situation is like
-             *
-             * 1. expand:
-             *    [x(tail/head), x, x, x, x]
-             *    -> [1, x(tail), x, x, x(head)]
-             *    -> [1, 2, x(tail), x, x(head)]
-             *    -> [1, 2, 3, x(tail), x(head)]
-             *    -> [1, 2, 3, x(head/tail), 4]
-             *    -> [1, 2, 3(head), 5(tail), 4]    ! size >= capacity !
-             *    -> [5, 4, 1, 2, 3, x(tail), x, x, x, x(head)]
-             *
-             * 2. shrink:
-             *    [1, x(tail), x, x, x, x(head), 3, 2]
-             *    -> [1, x(tail), x, x, x, x, x(head), 2]    ! size <= capacity * USAGE_PERCENT !
-             *    -> [2, 1, x(tail) , x(head)]
-             */
-            int newCapacity = (_size >= _capacity ? _capacity * 2
-                    : (int) (_capacity * USAGE_PERCENT * 2));
-            T[] newItems = (T[]) new Object[newCapacity];
-            // copy from items[phead() + 1 : _capacity - 1] (end_point included)
-            System.arraycopy(_items, phead() + 1, newItems, 0, _capacity - phead() - 1);
-            // copy from items[0, ptail() - 1]
-            System.arraycopy(_items, 0, newItems, _capacity - phead() - 1, ptail());
-            // reset _PHEAD and _PTAIL. !MUST NOT CHANGE THE ORDER
-            _ptail = _capacity - phead() + ptail() - 1;
-            _phead = newCapacity - 1;
-            // reset _items and _capacity
-            _items = newItems;
-            _capacity = newCapacity;
-        } else if (phead() + 1 <= ptail() - 1) {
-            /* This situation only has possibility of doing shrink, which is like
-             *
-             * 1. shrink:
-             *    [x, x, x(head), 1, 2, 3, x(tail), x]
-             *    -> [x, x, x(head), 1, 2, x(tail), x, x]    ! size <= capacity / 4 !
-             *    -> [1, 2, x(tail) , x(head)]
-             */
-            int newCapacity = _capacity / 2;
-            T[] newItems = (T[]) new Object[newCapacity];
-            System.arraycopy(_items, Math.floorMod(phead() + 1, _capacity),
-                    newItems, 0,
-                    ptail() - phead() - 1);
-            // reset _PHEAD and _PTAIL. !MUST NOT CHANGE THE ORDER
-            _ptail = ptail() - phead() - 1;
-            _phead = newCapacity - 1;
-            // reset _items and _capacity
-            _items = newItems;
-            _capacity = newCapacity;
-        }
+        // reset phead and ptail in NEWITEM.
+        _phead = newCapacity - 1;
+        _ptail = _size;
+        // reset other instance variables
+        _items = newItem;
+        _capacity = newCapacity;
     }
 
     /**
@@ -203,8 +158,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public void addFirst(T item) {
         // check capacity
-        if (resizable()) {
-            resize();
+        if (_size >= _capacity) {
+            resize(_capacity * RESIZE_FACTOR);
         }
         _items[phead()] = item;
         _phead -= 1;
@@ -224,8 +179,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public void addLast(T item) {
         // check capacity
-        if (resizable()) {
-            resize();
+        if (_size >= _capacity) {
+            resize(_capacity * RESIZE_FACTOR);
         }
         _items[ptail()] = item;
         _ptail += 1;
@@ -248,8 +203,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             return null;
         }
         // check capacity
-        if (resizable()) {
-            resize();
+        if (_size <= _capacity * USAGE_PERCENT && _size > MIN_CAPACITY) {
+            resize(_capacity / RESIZE_FACTOR);
         }
         int removedPosition = Math.floorMod(phead() + 1, _capacity);
         T value = _items[removedPosition];
@@ -274,8 +229,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             return null;
         }
         // check capacity
-        if (resizable()) {
-            resize();
+        if (_size <= _capacity * USAGE_PERCENT && _size > MIN_CAPACITY) {
+            resize(_capacity / RESIZE_FACTOR);
         }
         int removedPosition = Math.floorMod(ptail() - 1, _capacity);
         T value = _items[removedPosition];

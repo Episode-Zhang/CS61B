@@ -5,11 +5,11 @@ import java.util.Iterator;
 public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     // Inner nested Node class
     private static class Node<T> {
-        public T _item;
-        public Node<T> _next;
-        public Node<T> _prev;
+        private T _item;
+        private Node<T> _next;
+        private Node<T> _prev;
 
-        public Node(T item, Node<T> prev, Node<T> next) {
+        Node(T item, Node<T> prev, Node<T> next) {
             _item = item;
             _prev = prev;
             _next = next;
@@ -18,13 +18,13 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     // Iterator class
     private class LinkedListDequeIterator implements Iterator<T> {
-        private Node<T> current_node;
+        private Node<T> currentNode;
 
         /**
          * Constructor of LinkedListDequeIterator generator.
          */
-        public LinkedListDequeIterator() {
-            current_node = _sentinel;
+        LinkedListDequeIterator() {
+            currentNode = _sentinel;
         }
 
         /**
@@ -34,7 +34,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
          */
         @Override
         public boolean hasNext() {
-            return current_node._next != _sentinel;
+            return currentNode._next != _sentinel;
         }
 
         /**
@@ -44,8 +44,8 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
          */
         @Override
         public T next() {
-            current_node = current_node._next;
-            return current_node._item;
+            currentNode = currentNode._next;
+            return currentNode._item;
         }
     }
 
@@ -71,9 +71,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
      */
     @Override
     public void addFirst(T item) {
-        Node<T> first_added = new Node<>(item, _sentinel, _sentinel._next);
-        _sentinel._next._prev = first_added;
-        _sentinel._next = first_added;
+        Node<T> firstAdded = new Node<>(item, _sentinel, _sentinel._next);
+        _sentinel._next._prev = firstAdded;
+        _sentinel._next = firstAdded;
         _size += 1;
     }
 
@@ -84,20 +84,10 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
      */
     @Override
     public void addLast(T item) {
-        Node<T> last_added = new Node<>(item, _sentinel._prev, _sentinel);
-        _sentinel._prev._next = last_added;
-        _sentinel._prev = last_added;
+        Node<T> lastAdded = new Node<>(item, _sentinel._prev, _sentinel);
+        _sentinel._prev._next = lastAdded;
+        _sentinel._prev = lastAdded;
         _size += 1;
-    }
-
-    /**
-     * To judge whether a LinkedListDeque has at least single item.
-     *
-     * @return TRUE if there is at least one item, otherwise FALSE.
-     */
-    @Override
-    public boolean isEmpty() {
-        return _size == 0;
     }
 
     /**
@@ -120,11 +110,11 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         if (_size == 0) {
             return null;
         }
-        T first_item = _sentinel._next._item;
+        T firstItem = _sentinel._next._item;
         _sentinel._next = _sentinel._next._next;
         _sentinel._next._prev = _sentinel;
         _size -= 1;
-        return first_item;
+        return firstItem;
     }
 
     /**
@@ -137,11 +127,11 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         if (_size == 0) {
             return null;
         }
-        T last_item = _sentinel._prev._item;
+        T lastItem = _sentinel._prev._item;
         _sentinel._prev = _sentinel._prev._prev;
         _sentinel._prev._next = _sentinel;
         _size -= 1;
-        return last_item;
+        return lastItem;
     }
 
     /**
@@ -152,19 +142,19 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
      */
     @Override
     public T get(int index) {
-        Node<T> current_node = _sentinel;
+        Node<T> currentNode = _sentinel;
         // according to where indexed item located to decided iterate from head or tail.
         if (index < _size / 2) {
             for (int i = -1; i < index; i++) {   // i = -1 because node begins with sentinel.
-                current_node = current_node._next;
+                currentNode = currentNode._next;
             }
         } else {
             for (int i = 0; i < _size - index; i++) {
-                current_node = current_node._prev;
+                currentNode = currentNode._prev;
             }
         }
         // if index is illegal, then the method would return _sentinel._item, which is null.
-        return current_node._item;
+        return currentNode._item;
     }
 
     /**
@@ -193,18 +183,18 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
      * Handle method of public getRecursive version with current node memorized.
      *
      * @param index:        Location of the item you want to get, beginning with 0.
-     * @param current_node: To memorized which current node is.
+     * @param currentNode: To memorized which current node is.
      * @return Corresponding Node with specified index.
      */
-    private Node<T> getRecursive(int index, Node<T> current_node, final String direction) {
+    private Node<T> getRecursive(int index, Node<T> currentNode, final String direction) {
         if (index == 0) {
-            return current_node;
+            return currentNode;
         }
         // Decide direction
         if (direction.equals("FORWARD")) {
-            return getRecursive(index - 1, current_node._next, direction);
+            return getRecursive(index - 1, currentNode._next, direction);
         } else if (direction.equals("BACKWARD")) {
-            return getRecursive(index - 1, current_node._prev, direction);
+            return getRecursive(index - 1, currentNode._prev, direction);
         } else {
             throw new IllegalArgumentException(
                     "The argument \"direction\" must be selected from either FORWARD of BACKWARD ");
@@ -236,7 +226,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * To judge whether a given object(especially a LinkedListDeque) is equal to this LinkedListDeque.
+     * To judge whether a given object is equal to this LinkedListDeque.
      *
      * @param o: The given object
      * @return TRUE if o is LinkedListDeque which contains same items in same order to this.
@@ -244,20 +234,22 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     @Override
     public boolean equals(Object o) {
         // Do previous checks
-        if (!(o instanceof LinkedListDeque)) {
+        if (!(o instanceof Deque)) {
             return false;
         }
-        LinkedListDeque<T> another = (LinkedListDeque<T>) o;
+        Deque<T> another = (Deque<T>) o;
         if (_size != another.size()) {
             return false;
         }
         // Check items
-        Node<T> my_current_node = _sentinel._next;
-        for (T item : another) {
-            if (!item.equals(my_current_node._item)) {
+        Node<T> myCurrentNode = _sentinel._next;
+        Iterator<T> anotherIter = another.iterator();
+        while (anotherIter.hasNext()) {
+            T item = anotherIter.next();
+            if (!item.equals(myCurrentNode._item)) {
                 return false;
             }
-            my_current_node = my_current_node._next;
+            myCurrentNode = myCurrentNode._next;
         }
         return true;
     }

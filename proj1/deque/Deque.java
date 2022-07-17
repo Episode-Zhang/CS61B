@@ -1,5 +1,7 @@
 package deque;
 
+import java.util.Iterator;
+
 public interface Deque<T> {
     // Adds an item of type T to the *front* of the deque. Item won't be null
     void addFirst(T item);
@@ -8,7 +10,9 @@ public interface Deque<T> {
     void addLast(T item);
 
     // Return true iff deque is empty
-    boolean isEmpty();
+    default boolean isEmpty() {
+        return size() == 0;
+    }
 
     // Return size of deque
     int size();
@@ -24,4 +28,7 @@ public interface Deque<T> {
 
     // Get corresponding item. Return null if it doesn't exist.
     T get(int index);
+
+    // Generate an iterator of this
+    Iterator<T> iterator();
 }
