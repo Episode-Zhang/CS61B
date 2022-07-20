@@ -11,7 +11,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
      *
      * @param c: Identify the comparator and pass it to a MaxArrayDeque.
      */
-    MaxArrayDeque(Comparator<T> c) {
+    public MaxArrayDeque(Comparator<T> c) {
         super();
         _compatator = c;
     }
