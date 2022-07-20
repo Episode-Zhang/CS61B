@@ -207,16 +207,6 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     /**
-     * To judge whether an ArrayDeque has at least single item.
-     *
-     * @return TRUE if there is at least one item, otherwise FALSE.
-     *//*
-    @Override
-    public boolean isEmpty() {
-        return _size == 0;
-    }*/
-
-    /**
      * Give size of an ArrayDeque.
      *
      * @return Size of an ArrayDeque.
