@@ -1,7 +1,5 @@
 package deque;
 
-import java.util.Iterator;
-
 public interface Deque<T> {
     // Adds an item of type T to the *front* of the deque. Item won't be null
     void addFirst(T item);
