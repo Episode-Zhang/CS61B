@@ -1,0 +1,12 @@
+# tmep files for testing
+Test.cpp
+Test.py
+Test.java
+
+# files in target directory produced by idea
+*.class
+**/out/
+ 
+ # configuration files for editor/IDE
+.vscode/
+**/.idea/
