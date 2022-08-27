@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
 
-public class BSTMap<K extends Comparable<? super K>, V> implements Map61B<K, V> {
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     /** The data structure of node of binary search tree. */
     private static class BSTNode<K extends Comparable<? super K>, V> {
@@ -150,18 +150,14 @@ public class BSTMap<K extends Comparable<? super K>, V> implements Map61B<K, V> 
 
     /** Print all data stored in this BSTMap in order of increasing key. */
     public void printInOrder() {
-        System.out.println(this.toString());
-    }
-
-    @Override
-    public String toString() {
         String[] stringOfItems = new String[this.size];
         int index = 0;
         for (K key : this) {
             V value = get(key);
             stringOfItems[index++] = String.format("{%s: %s}", key.toString(), value.toString());
         }
-        return "[" + String.join(", ", stringOfItems) + "]";
+        String StringOfBSTMap = "[" + String.join(", ", stringOfItems) + "]";
+        System.out.println(StringOfBSTMap);
     }
 
     /**
