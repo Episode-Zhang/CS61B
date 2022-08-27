@@ -1,0 +1,19 @@
+string length        input size                                    performance
+      1                 1000        {BSTMap: 0.00 sec, ULLMap: 0.03 sec, TreeMap: 0.00 sec, HashMap: 0.00 sec}
+      1                 2000        {BSTMap: 0.00 sec, ULLMap: 0.04 sec, TreeMap: 0.00 sec, HashMap: 0.00 sec}
+      1                 4000        {BSTMap: 0.00 sec, ULLMap: 0.09 sec, TreeMap: 0.00 sec, HashMap: 0.00 sec}
+      1                 8000        {BSTMap: 0.00 sec, ULLMap: 0.30 sec, TreeMap: 0.00 sec, HashMap: 0.00 sec}
+      1                 16000       {BSTMap: 0.00 sec, ULLMap: 1.13 sec, TreeMap: 0.00 sec, HashMap: 0.00 sec}
+      1                 32000       {BSTMap: 0.00 sec, ULLMap: Stack Overflow, TreeMap: 0.01 sec, HashMap: 0.00 sec}
+      32                1000        {BSTMap: 0.00 sec, ULLMap: 0.01 sec, TreeMap: 0.00 sec, HashMap: 0.00 sec}
+      32                2000        {BSTMap: 0.00 sec, ULLMap: 0.04 sec, TreeMap: 0.00 sec, HashMap: 0.00 sec}
+      32                4000        {BSTMap: 0.01 sec, ULLMap: 0.09 sec, TreeMap: 0.01 sec, HashMap: 0.00 sec}
+      32                8000        {BSTMap: 0.01 sec, ULLMap: 0.36 sec, TreeMap: 0.01 sec, HashMap: 0.01 sec}
+      32                16000       {BSTMap: 0.02 sec, ULLMap: 1.33 sec, TreeMap: 0.02 sec, HashMap: 0.01 sec}
+      32                32000       {BSTMap: 0.04 sec, ULLMap: Stack Overflow, TreeMap: 0.04 sec, HashMap: 0.02 sec}
+      256               1000        {BSTMap: 0.01 sec, ULLMap: 0.02 sec, TreeMap: 0.01 sec, HashMap: 0.01 sec}
+      256               2000        {BSTMap: 0.01 sec, ULLMap: 0.07 sec, TreeMap: 0.01 sec, HashMap: 0.01 sec}
+      256               4000        {BSTMap: 0.02 sec, ULLMap: 0.21 sec, TreeMap: 0.02 sec, HashMap: 0.02 sec}
+      256               8000        {BSTMap: 0.04 sec, ULLMap: 0.76 sec, TreeMap: 0.04 sec, HashMap: 0.04 sec}
+      256               16000       {BSTMap: 0.08 sec, ULLMap: 3.05 sec, TreeMap: 0.08 sec, HashMap: 0.08 sec}
+      256               32000       {BSTMap: 0.17 sec, ULLMap: Stack Overflow, TreeMap: 0.16 sec, HashMap: 0.16 sec}
