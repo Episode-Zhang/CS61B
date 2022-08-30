@@ -105,7 +105,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     @Override
     public void put(K key, V value) {
         this.root = insert(this.root, key, value);
-        this.size += 1;
     }
 
     /** Removes the mapping for the specified key from this map if present.
@@ -115,7 +114,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         BSTNode<K, V> target = search(this.root, key);
         if (target != null) {
             this.root = delete(this.root, key);
-            this.size -= 1;
         }
         return target == null ? null : target.value;
     }
@@ -127,7 +125,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         BSTNode<K, V> target = search(this.root, key);
         if (target != null && target.value == value) {
             this.root = delete(this.root, key);
-            this.size -= 1;
             return target.value;
         }
         return null;
@@ -191,6 +188,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     private BSTNode<K, V> insert(BSTNode<K, V> startNode, final K key, final V value) {
         if (startNode == null) {
+            this.size += 1;
             return new BSTNode<>(key, value);
         }
         if (key.compareTo(startNode.key) < 0) {
@@ -230,6 +228,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                 successor.right = startNode.right;
                 startNode = successor;
             }
+            this.size -= 1;
         }
         return startNode;
     }
