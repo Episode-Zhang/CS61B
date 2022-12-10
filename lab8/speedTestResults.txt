@@ -88,8 +88,9 @@ input size                                    performance
         what to do is just to hash a hashcode again(but the logic behind these two hash functions usually
         differs). So, the second-time hash costs Θ(1) in time complexity and the result is if we look up this
         object next time, we cost Θ(1) for finding the first bucket, and Θ(1) for the next bucket. In the
-        bucket, we already know that searching a particular key costs constant time, which depends on the load
-        factor. By multiplying all of these together, we can know that searching an object costs constant-time
-        complexity in a nested HashMap structure.
+        bucket, supposed that the hash function is good enough, we already know that searching a particular
+        key costs constant time, which depends on the load factor. By multiplying all of these together, we can
+        know that searching an object costs constant-time complexity in a nested HashMap structure.
 --------------------------------------------------------------------------------------------------------------
+
 
