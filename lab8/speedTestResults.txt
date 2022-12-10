@@ -1,0 +1,94 @@
+-------------------------------------------Bucket Speed Test--------------------------------------------------
+string length        input size                                    performance
+      1                 1000        {AL: 0.01 sec, LL: 0.00 sec, TS: 0.01 sec, HS: 0.00 sec, PQ: 0.00 sec}
+      1                 2000        {AL: 0.00 sec, LL: 0.00 sec, TS: 0.00 sec, HS: 0.00 sec, PQ: 0.00 sec}
+      1                 4000        {AL: 0.00 sec, LL: 0.00 sec, TS: 0.00 sec, HS: 0.00 sec, PQ: 0.00 sec}
+      1                 8000        {AL: 0.00 sec, LL: 0.01 sec, TS: 0.01 sec, HS: 0.01 sec, PQ: 0.01 sec}
+      1                 16000       {AL: 0.01 sec, LL: 0.01 sec, TS: 0.01 sec, HS: 0.01 sec, PQ: 0.00 sec}
+      1                 32000       {AL: 0.01 sec, LL: 0.01 sec, TS: 0.01 sec, HS: 0.01 sec, PQ: 0.01 sec}
+      
+      32                1000        {AL: 0.02 sec, LL: 0.01 sec, TS: 0.01 sec, HS: 0.00 sec, PQ: 0.00 sec}
+      32                2000        {AL: 0.01 sec, LL: 0.01 sec, TS: 0.01 sec, HS: 0.00 sec, PQ: 0.00 sec}
+      32                4000        {AL: 0.01 sec, LL: 0.01 sec, TS: 0.01 sec, HS: 0.01 sec, PQ: 0.01 sec}
+      32                8000        {AL: 0.02 sec, LL: 0.01 sec, TS: 0.01 sec, HS: 0.01 sec, PQ: 0.01 sec}
+      32                16000       {AL: 0.03 sec, LL: 0.02 sec, TS: 0.02 sec, HS: 0.02 sec, PQ: 0.02 sec}
+      32                32000       {AL: 0.05 sec, LL: 0.04 sec, TS: 0.04 sec, HS: 0.04 sec, PQ: 0.03 sec}
+      
+      256               1000        {AL: 0.03 sec, LL: 0.01 sec, TS: 0.02 sec, HS: 0.01 sec, PQ: 0.01 sec}
+      256               2000        {AL: 0.03 sec, LL: 0.02 sec, TS: 0.03 sec, HS: 0.02 sec, PQ: 0.02 sec}
+      256               4000        {AL: 0.04 sec, LL: 0.02 sec, TS: 0.02 sec, HS: 0.02 sec, PQ: 0.02 sec}
+      256               8000        {AL: 0.07 sec, LL: 0.04 sec, TS: 0.04 sec, HS: 0.04 sec, PQ: 0.04 sec}
+      256               16000       {AL: 0.09 sec, LL: 0.08 sec, TS: 0.08 sec, HS: 0.09 sec, PQ: 0.09 sec}
+      256               32000       {AL: 0.19 sec, LL: 0.17 sec, TS: 0.17 sec, HS: 0.17 sec, PQ: 0.16 sec}
+--------------------------------------------------------------------------------------------------------------
+
+
+----------------------------------------Insert Random Speed Test----------------------------------------------
+string length        input size                                    performance
+      1                 1000        {ULLMap: 0.00 sec, MyHashMap(AList): 0.00 sec, HashMap: 0.00 sec}
+      1                 2000        {ULLMap: 0.00 sec, MyHashMap(AList): 0.00 sec, HashMap: 0.00 sec}
+      1                 4000        {ULLMap: 0.00 sec, MyHashMap(AList): 0.00 sec, HashMap: 0.00 sec}
+      1                 8000        {ULLMap: 0.01 sec, MyHashMap(AList): 0.01 sec, HashMap: 0.00 sec}
+      1                 16000       {ULLMap: 0.01 sec, MyHashMap(AList): 0.01 sec, HashMap: 0.01 sec}
+      1                 32000       {ULLMap: 0.01 sec, MyHashMap(AList): 0.02 sec, HashMap: 0.01 sec}
+      
+      32                1000        {ULLMap: 0.03 sec, MyHashMap(AList): 0.01 sec, HashMap: 0.00 sec}
+      32                2000        {ULLMap: 0.04 sec, MyHashMap(AList): 0.01 sec, HashMap: 0.01 sec}
+      32                4000        {ULLMap: 0.10 sec, MyHashMap(AList): 0.02 sec, HashMap: 0.02 sec}
+      32                8000        {ULLMap: 0.40 sec, MyHashMap(AList): 0.03 sec, HashMap: 0.03 sec}
+      32                16000       {ULLMap: 1.64 sec, MyHashMap(AList): 0.04 sec, HashMap: 0.04 sec}
+      32                32000       {ULLMap: Stack Overflow, MyHashMap(AList): 0.07 sec, HashMap: 0.06 sec}
+      
+      256               1000        {ULLMap: 0.04 sec, MyHashMap(AList): 0.01 sec, HashMap: 0.01 sec}
+      256               2000        {ULLMap: 0.07 sec, MyHashMap(AList): 0.03 sec, HashMap: 0.02 sec}
+      256               4000        {ULLMap: 0.22 sec, MyHashMap(AList): 0.05 sec, HashMap: 0.03 sec}
+      256               8000        {ULLMap: 0.73 sec, MyHashMap(AList): 0.06 sec, HashMap: 0.05 sec}
+      256               16000       {ULLMap: 2.94 sec, MyHashMap(AList): 0.08 sec, HashMap: 0.10 sec}
+      256               32000       {ULLMap: Stack Overflow, MyHashMap(AList): 0.19 sec, HashMap: 0.17 sec}
+--------------------------------------------------------------------------------------------------------------
+
+
+---------------------------------------Insert InOrder Speed Test----------------------------------------------
+input size                                    performance
+   1000        {ULLMap: 0.04 sec, MyHashMap(TS): 0.01 sec, HashMap: 0.01 sec}
+   2000        {ULLMap: 0.07 sec, MyHashMap(TS): 0.01 sec, HashMap: 0.01 sec}
+   4000        {ULLMap: 0.21 sec, MyHashMap(TS): 0.02 sec, HashMap: 0.00 sec}
+   8000        {ULLMap: 0.84 sec, MyHashMap(TS): 0.03 sec, HashMap: 0.02 sec}
+   16000       {ULLMap: 3.47 sec, MyHashMap(TS): 0.03 sec, HashMap: 0.03 sec}
+   32000       {ULLMap: Stack Overflow, MyHashMap(TS): 0.05 sec, HashMap: 0.05 sec}
+--------------------------------------------------------------------------------------------------------------
+
+
+
+
+------------------------------------------------Question sheet------------------------------------------------
+1. When would it be better to use a BSTMap/TreeMap instead of a HashMap?
+ 
+ - Both TreeMap and HashMap provide functions for storing K-V pairs. However, due to the differences in 
+   underlying structures, TreeMap needs additional information on stored entries, which is its "order". The 
+   data entries themselves are supposed to have or be defined property of the order, otherwise, TreeMap won't
+   make sense. It is such a property of TreeMap that helps us dealing data in some circumstances when order is
+   of significance, say, searching the element of "rank N", or other situations like this. At the same time,
+   HashMap leads to a little bit worse efficiency on such tasks.
+
+
+2. Would our hash table speed up if we were able to use a logarithmic search over the TreeSet or a
+   constant-time search over the HashSet?
+ 
+ - Of course. First, find a proper bucket costs Θ(1) in time complexity. Then, according to the structures of
+   our bucket, we accordingly have:
+     
+     a. If our bucket is actually a TreeSet, then we can use its invariant of "ordered pairs" to apply a
+        binary-search-like method to find the target item, which has the time complexity of Θ(logN). Hence, we
+        draw a conclusion that searching costs time complexity of Θ(1)*Θ(logN) = Θ(logN) in total.
+     
+     b. What about our bucket is a HashSet? It is indeed a nested data structure now. But if only we remember
+        that the most critical part of a HashSet/HashMap is to translate an object to one hashcode and then
+        throw it to the corresponding place, we can immediately figure out that if a bucket is again a HashSet,
+        what to do is just to hash a hashcode again(but the logic behind these two hash functions usually
+        differs). So, the second-time hash costs Θ(1) in time complexity and the result is if we look up this
+        object next time, we cost Θ(1) for finding the first bucket, and Θ(1) for the next bucket. In the
+        bucket, we already know that searching a particular key costs constant time, which depends on the load
+        factor. By multiplying all of these together, we can know that searching an object costs constant-time
+        complexity in a nested HashMap structure.
+--------------------------------------------------------------------------------------------------------------
