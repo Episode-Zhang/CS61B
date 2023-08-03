@@ -1,6 +1,8 @@
 package capers;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 import static capers.Utils.*;
 
@@ -36,11 +38,17 @@ public class Main {
      *
      * @param args arguments from the command line
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        File file = new File("test.md");
+        if (!file.exists()) {
+            System.out.println("文件不存在，正在创建...");
+            file.createNewFile();
+        }
+        Utils.writeContents(file, "# Readme\n## 介绍\n简单的项目.");
         if (args.length == 0) {
             Utils.exitWithError("Must have at least one argument");
         }
-
+        System.out.println("args: " + Arrays.toString(args));
         CapersRepository.setupPersistence();
         String text;
         switch (args[0]) {
