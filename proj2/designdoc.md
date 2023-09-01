@@ -1,5 +1,14 @@
 # gitlet Design Doc
 
+## 0. Helpful instructions
+
+1. Compile all java files in proj2's directory, using `javac getlet/*.java `;
+2. Copy compiled java class files into {someplace}/{testfolder}/gitlet by using
+3. If source code has changed in some way, redo step 2;
+4. Test gitlet's behavior to see if it matches your expectation;
+
+(btw, hit a lot of return in your terminal as many as you can, which makes you look like a pro🤪)
+
 ## 1. Fundamental Data Structure
 
 Additional referencing materials:
