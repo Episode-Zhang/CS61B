@@ -236,4 +236,10 @@ class Utils {
         System.out.printf(msg, args);
         System.out.println();
     }
+
+    /** Check if program runs in debugging mode. By setting env variable DEBUG=1,
+     *  we mean it's in debugging mode. */
+    static boolean debuggingMode() {
+        return System.getenv("DEBUG") != null && System.getenv("DEBUG").equals("1");
+    }
 }
