@@ -8,10 +8,17 @@ import java.util.TreeMap;
  * @author jeffery-zhang
  */
 public class StagedArea {
-    // TODO: Should use skeleton mode.
-    TreeMap<File, Blob> tree;
 
-    public StagedArea() {
-        
+    private TreeMap<File, Blob> tree;
+
+    private static StagedArea instance = null;
+
+    private StagedArea() {}
+
+    public static StagedArea getInstance() {
+        if (instance == null) {
+            instance = new StagedArea();
+        }
+        return instance;
     }
 }
