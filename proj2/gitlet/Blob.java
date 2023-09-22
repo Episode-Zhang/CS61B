@@ -52,13 +52,17 @@ public class Blob implements Serializable {
      * Set new destination to save the blob file.
      *
      * @param newDestination New destination, using relative path.
-     * @return The relative path of saved blob.
      */
     public void setDestination(String newDestination) {
         this.destination = Utils.join(ROOTDIR, newDestination);
     }
 
-    /** Serialize the blob instance. */
+    /**
+     * Serialize the blob instance.
+     *
+     * @return The relative path of the saved blob.
+     * @throws IOException If an I/O error occurs.
+     */
     public String save() throws IOException {
         if (!this.destination.exists()) {
             boolean success = this.destination.mkdirs();
