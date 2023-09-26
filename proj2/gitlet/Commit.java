@@ -8,7 +8,7 @@ import java.util.Date; // TODO: You'll likely use this in this class
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
- *  @author TODO
+ *  @author jeffery-zhang
  */
 public class Commit {
     /**
@@ -21,6 +21,12 @@ public class Commit {
 
     /** The message of this Commit. */
     private String message;
+
+    /** Timestamp of this commit when created. */
+    private Date timestamp;
+
+    /** Parent of this commit. */
+    private Commit parent;
 
     /* TODO: fill in the rest of this class. */
 }
