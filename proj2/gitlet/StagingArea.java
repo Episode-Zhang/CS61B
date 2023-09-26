@@ -7,21 +7,21 @@ import java.util.HashMap;
  * Staged area stores added files with their blob between each two commits.
  * @author jeffery-zhang
  */
-public class StagedArea {
+public class StagingArea {
 
     /** Maintains a file-name-to-blob map.  */
     private HashMap<File, Blob> fileStorage;
 
     /** This class uses singleton pattern. */
-    private static StagedArea instance = null;
+    private static StagingArea instance = null;
 
     /** Constructor. */
-    private StagedArea() {}
+    private StagingArea() {}
 
     /** The initialization of the unique instance will be delayed to the first time it is used. */
-    public static StagedArea getInstance() {
+    public static StagingArea getInstance() {
         if (instance == null) {
-            instance = new StagedArea();
+            instance = new StagingArea();
         }
         return instance;
     }
