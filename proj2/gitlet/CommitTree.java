@@ -1,38 +1,35 @@
 package gitlet;
 
+
+import java.io.File;
 import java.util.Date;
-
-
+import java.util.HashMap;
 
 
 /**
- * Represents a gitlet commit object.
+ * Organize all commits into a tree structure.
  *
  * @author jeffery-zhang
  */
-public class Commit {
+public class CommitTree {
+    /** Root of the Commit Tree. */
+    private CommitNode root;
 
-    /** The message of this Commit. */
-    private String message;
+    /** The instance of the CommitTree should be unique. */
+    private static CommitTree instance;
 
-    /** Timestamp of this commit when created. */
-    private Date timestamp;
-
-    /** Parent of this commit. */
-    private Commit parent;
-
-    /**
-     * Constructor of Commit Class.
-     *
-     * @param message The descriptive message of this Commit.
-     * @param parent Parent of this Commit.
-     */
-    public Commit(String message, Commit parent) {
-        // set timestamp to be current timestamp default
-        this.timestamp = new Date();
-        this.message = message;
-        this.parent = parent;
+    /** The initialization will be delayed in its first being requested time. */
+    private CommitTree() {
+        this.root = new CommitNode("initial commit", new HashMap<>(), null);
     }
 
+    /** Get the unique instance. */
+    public static CommitTree getInstance() {
+        if (instance == null) {
+            // initialize
+            instance = new CommitTree();
+        }
+        return instance;
+    }
 
 }
