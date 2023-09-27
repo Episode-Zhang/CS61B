@@ -15,8 +15,10 @@ public class StagingArea {
     /** This class uses singleton pattern. */
     private static StagingArea instance = null;
 
-    /** Constructor. */
-    private StagingArea() {}
+    /** Constructor, only available inside the StagingArea class. */
+    private StagingArea() {
+        this.fileStorage = new HashMap<File, Blob>();
+    }
 
     /** The initialization of the unique instance will be delayed to the first time it is used. */
     public static StagingArea getInstance() {
@@ -34,5 +36,16 @@ public class StagingArea {
      */
     public void add(String filename, Blob blob) {
         instance.add(filename, blob);
+    }
+
+    /**
+     * Get the current staging area's file storage, using move semantics.
+     *
+     * @return The current staging area's file storage.
+     */
+    public HashMap<File, Blob> getFileStorage() {
+        HashMap<File, Blob> storage = this.fileStorage;
+        this.fileStorage = new HashMap<>();
+        return storage;
     }
 }
