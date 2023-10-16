@@ -5,7 +5,11 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 
-/** The node structure of commit. */
+/**
+ * The node structure of commit.
+ *
+ * @author jeffery-zhang
+ */
 public class CommitNode {
     /** The message of this Commit. */
     private String message;

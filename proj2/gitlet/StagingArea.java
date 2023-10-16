@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 /**
  * Staged area stores added files with their blob between each two commits.
+ *
  * @author jeffery-zhang
  */
 public class StagingArea {
