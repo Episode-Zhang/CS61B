@@ -21,9 +21,13 @@
     - 两次commit之间add了哪些文件 - buffer/暂存区/staged area
     - 如何记录和索引这些add的文件 - tree
     - 记录和索引哪些文件 - blob
-- branch需要指导整个branch上的commit链，它的root可能是init时候来的，也有可能是别的branch里分出来的。其解决的关键问题是：
+- branch需要知道整个branch上的commit链，它的root可能是init时候来的，也有可能是别的branch里分出来的。其解决的关键问题是：
     - 如何记录和追溯整条branch链 - parent指针
     - 如何不和其它branch搞混 - branch指针指向当前branch的最新commit，commit记录和追溯自己的父commit
+- 为了记录和追溯提交记录，我们需要引入**2个指针**结构
+    1. HEAD指针。永远指向最新一次的**commit**
+    2. branch指针。永远指向**当前分支最新一次的commit**
+       3. branch指针需要包括其所对应的branch的最新一次commit-branch head，以及这个branch的root结点
 
 ---
 
