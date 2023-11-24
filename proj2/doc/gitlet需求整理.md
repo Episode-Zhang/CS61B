@@ -110,5 +110,27 @@ project 2需要实现一个玩具版的git版本控制系统，称为gitlet，�
    - 运行时性能：对任意给定变量的规模均为常数复杂度$\Theta(1)$
    - 失败用例：若给出的文件名既不在暂存区，同时也处于未追踪的状态，则打印`No reason to remove the file.`
    - 是否危险：是
-5. log
-   - 命令
+
+5. rm-branch
+
+    - 命令：`java gitlet.Main rm-branch [branch name]`
+    - 职责：删除给出的branch name参数对应的branch。注意，所谓“删除branch”是指只删除branch对应的指针，对于被指向的commit不应做任何删除操作！
+    - 运行时性能：对任意给定变量的规模均为常数复杂度$\Theta(1)$
+    - 失败用例：
+        - 如果参数branch name对应的branch不存在，则打印`A branch with that name does not exist.`；
+        - 如果删除的branch是当前所处的branch，则退出，并打印`Cannot remove the current branch.`；
+    - 是否危险：否
+
+6. reset
+
+    - 命令：`java gitlet.Main reset [commit id]`
+    - 职责：
+        - 检出给出的commit id参数所对应commit中所有追踪的文件至工作目录；
+        - 对于当前工作目录中已追踪但在指定commit中不存在的文件执行删除操作；
+        - 将当前分支的指针指向对应的comimt；
+        - `reset`命令执行完毕后，清空暂存区；
+    - 运行时性能：令$N$为给定commit追踪的文件数，$M$为提交的commit总数，则时间复杂度应为$O(N)$，$O(1)$对$M$
+    - 失败用例：
+        - 如果给定的commit id不存在与之对应的commit，则打印`No commit with that id exists.`；
+        - 如果当前工作区内存在未被追踪的文件，但会被即将执行的`reset`命令检出的文件覆写，则打印`There is an untracked file in the way; delete it, or add and commit it first.`；
+    - 是否危险：是
