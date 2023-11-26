@@ -240,3 +240,48 @@ project 2需要实现一个玩具版的git版本控制系统，称为gitlet，�
 
 ### 3.13 merge
 
+- 命令：`java gitlet.Main merge [branch name]`
+
+- 职责：将给定的branch name参数对应的branch合并入当前分支：
+  - 考虑两个分支的最近公共祖先(latest common ancestor，简记为“lca”)commit
+
+  - 如果lca commit恰好为给出的将要merge进来的分支指向的commit，则`merge操作`结束，打印`Given branch is an ancestor of the current branch.`；
+
+  - 如果lca commit为当前分支指向的commit，则`merge`命令退化为`checkout [branch name]`，并打印`Current branch fast-forwarded.`
+
+  - 如果lca既不是merge进来的branch指向的commit，也不是当前分支指向的commit，则：
+    - lca之后的，merge进来的分支中commit结点中，已追踪的文件如果修改过的，但在当前分支中未修改，那么当前分支里面对应的文件，需要将它们的版本同步到与merge进来的分支保持一致；
+
+    - lca之后的，当前分支中修改过的，但是merge进来的分支内每修改过的文件，保持不变；
+
+    - lca之后的，文件内容在merge进来的分支与当前分支都进行了修改，且修改的方式是一致的，那么`merge`操作不会改变这些文件的状态；
+
+    - lca中未追踪，但是当前分支中追踪了的文件，保持追踪的状态；
+
+    - lca中未追踪，但是merge进来的分支中追踪了的文件，需要被检出并保持追踪的状态；
+
+    - lca中追踪了的，当前分支中未修改，但是merge进来的分支中不存在的文件，需要删除并标记为未追踪；
+
+    - lca中追踪了的，merge进来的分支未修改，但是当前分支中不存在的文件，继续保持该文件不存在(删除+未追踪)的状态；
+
+    - 如果某个文件分别以不同的方式被merge进来的分支和当前分支修改，则我们遇到了“合并冲突”的场景，此时，将两个分支中文件内容不一致的地方替换为如图所示的内容：
+
+      ![](./pic/command-merge normal-conflict.png)
+
+      替换完成后，将内容替换过了的整个文件标记为“追踪”状态；如果其中一个分支中的文件被删除了，则我们将内容删除的文件中的内容是为空字符串，如下图所示:
+
+      ![](./pic/command-merge empty-conflict.png)
+
+  merge完成后，自动创建一个merge commit，使用`Merged [given branch name] into [current branch name].`作为commit message，如果merge遇到了冲突，则在终端上打印`Encountered a merge conflict.`，另外，merge commit需要同时作为当前branch与merge进来的branch的父结点。
+
+- 运行时性能：令$N$为两个分支共同的祖先，$D$为两个分支中，所有commit中所有文件的数据的总量，则时间复杂度应为$O(N\lg{N} + D)$；
+
+- 失败用例：
+
+  - 如果当前暂存区中有内容或者未提交的、已追踪文件的删除，打印`You have uncommitted changes.`并退出；
+  - 如果给出的branch name不存在，打印`A branch with that name does not exist.`；
+  - 如果用户尝试将当前已经所处的分支再次merge进来，打印`Cannot merge a branch with itself.`；
+  - 如果当前工作区内存在未被追踪的文件，但会被即将执行的`merge`命令检出的文件覆写，则打印`There is an untracked file in the way; delete it, or add and commit it first.`并退出；
+
+- 是否危险：是
+
