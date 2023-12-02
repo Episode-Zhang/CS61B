@@ -70,10 +70,27 @@ gitlet不仅提供了一套单机的文件快照管理的解决方案，还提�
 
 ### 4.1 Blob
 
+Blob是给定文件在给定时刻下的**状态的抽象**，一个Blob对象应该至少包括这些成员：
 
+- id {String} blob对象的id，用于唯一标识一个blob对象，采用sha1 hash进行编码；
+- content {String} blob对象对应文件的内容；
 
-### 4.2 Commit
+### 4.2 Stagingrea
 
+StagingArea对应业务对象中的“暂存区”的概念，其至少需要包括：
 
+- fileName {String} add进入的文件的文件名；
+- fileBlob {String} 文件名对应的Blob；
+
+### 4.4 Commit
+
+对应业务对象中的“Commit”，其至少需要包括：
+
+- id {String} Commit对象的id，用于唯一标识一个Commit对象，采用sha1 hash进行编码；
+- stagedFiles {StagedArea} 文件及其Blob的快照；
 
 ### 4.3 Tree
+
+对应Commit的历史以及分支，其至少需要包括：
+
+- 
