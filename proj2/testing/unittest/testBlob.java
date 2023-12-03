@@ -4,8 +4,6 @@ package testing.unittest;
 import gitlet.Blob;
 import gitlet.Helper;
 import org.junit.Test;
-import java.io.IOException;
-
 
 public class testBlob {
 
