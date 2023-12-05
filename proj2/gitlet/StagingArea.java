@@ -29,7 +29,7 @@ public class StagingArea implements Serializable {
     /** Constructor of the Blob, only used in the public method getInstance.
      * @see #getInstance() */
     private StagingArea() {
-        fileBlobTable = new TreeMap<File, Blob>();
+        fileBlobTable = new TreeMap<>();
     }
 
     /**
@@ -80,8 +80,18 @@ public class StagingArea implements Serializable {
         return false;
     }
 
+    /** Get the File-Blob mapping table. */
+    public TreeMap<File, Blob> getTable() {
+        return fileBlobTable;
+    }
+
+    /** Clear the File-Blob mapping table (in move semantics, it doesn't do a real clear). */
+    public void clearTable() {
+        fileBlobTable = new TreeMap<>();
+    }
+
     /** Save the member variable fileBlobTable to the disk. */
-    private void save() {
+    public void save() {
         File tableFile = Utils.join(Helper.REPO_DIR, serializedName);
         Utils.writeObject(tableFile, fileBlobTable);
     }
