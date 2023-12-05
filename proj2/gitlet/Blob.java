@@ -66,6 +66,11 @@ public class Blob implements Serializable {
         System.out.println(content);
     }
 
+    /** Get the id of this Blob. */
+    public String getId() {
+        return id;
+    }
+
     /**
      * save(or serialize, in precise) the blob object to the disk.
      *
