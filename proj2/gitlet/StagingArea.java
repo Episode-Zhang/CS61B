@@ -80,18 +80,16 @@ public class StagingArea implements Serializable {
         return false;
     }
 
-    /** Get the File-Blob mapping table. */
-    public TreeMap<File, Blob> getTable() {
-        return fileBlobTable;
-    }
-
-    /** Clear the File-Blob mapping table (in move semantics, it doesn't do a real clear). */
-    public void clearTable() {
+    /** Moving contents in the fileBlob into another table. */
+    public TreeMap<File, Blob> moveTable() {
+        TreeMap<File, Blob> originalTable = fileBlobTable;
         fileBlobTable = new TreeMap<>();
+        save();
+        return originalTable;
     }
 
     /** Save the member variable fileBlobTable to the disk. */
-    public void save() {
+    private void save() {
         File tableFile = Utils.join(Helper.REPO_DIR, serializedName);
         Utils.writeObject(tableFile, fileBlobTable);
     }
