@@ -3,6 +3,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 /**
@@ -50,6 +51,7 @@ public class StagingArea implements Serializable {
             File tableFile = Utils.join(Helper.REPO_DIR, serializedName);
             if (!tableFile.exists()) {
                 instance = new StagingArea();
+                instance.save();
             } else {
                 TreeMap<File, Blob> diskTable = Utils.readObject(tableFile, TreeMap.class);
                 instance = new StagingArea(diskTable);
@@ -69,6 +71,7 @@ public class StagingArea implements Serializable {
      */
     public boolean add(String filePath) throws Helper.FileDoesNotExistException {
         // TODO Maybe should check nested files in a directory, aka, add a "directory".
+        filePath = filePath.replace("./", "");
         Blob blob = Blob.createBlob(filePath);
         // defensive check
         if (blob != null) {
@@ -86,6 +89,15 @@ public class StagingArea implements Serializable {
         fileBlobTable = new TreeMap<>();
         save();
         return originalTable;
+    }
+
+    /** Get the name of files which are stored in the staging area. */
+    public ArrayList<String> getStagingFileName() {
+        ArrayList<String> fileNames = new ArrayList<>(fileBlobTable.size());
+        for (File file : fileBlobTable.keySet()) {
+            fileNames.add(file.toString().replace(Helper.ROOT_DIR, ""));
+        }
+        return fileNames;
     }
 
     /** Save the member variable fileBlobTable to the disk. */
