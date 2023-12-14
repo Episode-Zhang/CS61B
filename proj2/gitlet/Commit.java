@@ -2,6 +2,7 @@ package gitlet;
 
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TreeMap;
@@ -14,7 +15,7 @@ import java.text.SimpleDateFormat;
  * @author jeffery-zhang
  * @version 1.0
  */
-public class Commit {
+public class Commit implements Serializable {
 
     /** Id of this blob, should be sha1 hash based on all blobs' id. */
     private String id;
@@ -34,17 +35,21 @@ public class Commit {
     /** Mapping for File to Blob. */
     private TreeMap<File, Blob> fileBlobTable;
 
+    /** Directory to save the commit, using relative path. */
+    private File dest;
+
 
     /** Constructor of the Commit, only used in the public method createCommit.
      * @see #createCommit(Commit, String, StagingArea) */
     private Commit(String id, Commit child, ArrayList<Commit> parent,
-                   String timestamp, String message, TreeMap<File, Blob> table) {
+                   String timestamp, String message, TreeMap<File, Blob> table, File dest) {
         this.id = id;
         this.child = child;
         this.parent = parent;
         this.timestamp = timestamp;
         this.message = message;
         this.fileBlobTable = table;
+        this.dest = dest;
     }
 
     /**
@@ -56,12 +61,6 @@ public class Commit {
      * @return a Commit instance.
      */
     public Commit createCommit(Commit parent, String message, StagingArea stagingArea) {
-        // create id of the commit instance
-        StringBuilder blobIds = new StringBuilder();
-        for (Blob blob : stagingArea.getTable().values()) {
-            blobIds.append(blob.getId());
-        }
-        String commitId = Utils.sha1(blobIds.toString());
         // create parent of the commit instance
         ArrayList<Commit> parents = new ArrayList<>();
         parents.add(parent);
@@ -69,29 +68,37 @@ public class Commit {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String timestamp = formatter.format(new Date());
         // create file-blob map for this commit
-        TreeMap<File, Blob> fileBlobTable = stagingArea.getTable();
+        TreeMap<File, Blob> fileBlobTable = stagingArea.moveTable();
         // create id for this commit
-        Commit commit = new Commit(commitId, null, parents, timestamp, message, fileBlobTable);
-        commit.save();
+        StringBuilder blobIds = new StringBuilder();
+        for (Blob blob : fileBlobTable.values()) {
+            blobIds.append(blob.getId());
+        }
+        String commitId = Utils.sha1(blobIds.toString());
+        // create saving destination for this commit
+        int dirBound = 2;
+        String commitDir = "commits/" + commitId.substring(0, dirBound);
+        String commitName = commitId.substring(dirBound);
+        File commitDest = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, commitDir);
+        // create a new commit
+        Commit commit = new Commit(commitId, null, parents, timestamp, message, fileBlobTable, commitDest);
+        commit.save(commitName);
         return commit;
     }
+    
 
-
-
-    private void addChild(Commit childCommit) {
-        child = childCommit;
+    /**
+     * save(or serialize, in precise) the commit object to the disk.
+     *
+     * @param path the path to save the commit, using relative path.
+     * @return the saved path of the commit object. */
+    private String save(String path) {
+        if (!dest.exists()) {
+            dest.mkdirs();
+        }
+        final File commit = Utils.join(dest, path);
+        Utils.writeObject(commit, this);
+        final String blobPath = commit.toString().replace(Helper.ROOT_DIR, "");
+        return blobPath;
     }
-
-    private void addParent(Commit parentCommit) {
-        parent.add(parentCommit);
-    }
-
-
-    private void save() {
-        // TODO
-    }
-
-
-
-
 }
