@@ -67,7 +67,7 @@ public class Helper {
             return;
         }
         Blob blob = Utils.readObject(blobFile, Blob.class);
-        blob.printContent();
+        System.out.println(blob);
     }
 
     /**
@@ -76,6 +76,6 @@ public class Helper {
      * @param blob The blob object.
      */
     public static void printBlobContent(Blob blob) {
-        blob.printContent();
+        System.out.println(blob);
     }
 }

@@ -61,9 +61,10 @@ public class Blob implements Serializable {
         return blob;
     }
 
-    /** Print the content of this blob object into stdin device. */
-    public void printContent() {
-        System.out.println(content);
+    /** Using the content of file to represent a blob. */
+    @Override
+    public String toString() {
+        return content;
     }
 
     /** Get the id of this Blob. */
