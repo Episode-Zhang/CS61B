@@ -85,7 +85,20 @@ public class Commit implements Serializable {
         commit.save(commitName);
         return commit;
     }
-    
+
+    /** Using the commit message, timestamp, files to represent a commit object. */
+    @Override
+    public String toString() {
+        ArrayList<String> files = new ArrayList<>(fileBlobTable.keySet().size());
+        for (File file : fileBlobTable.keySet()) {
+            files.add(file.toString());
+        }
+        return String.format("commit message: %s\n" +
+                "commit time: %s\n" +
+                "commit files: %s\n",
+                message, timestamp, String.join(", ", files)
+        );
+    }
 
     /**
      * save(or serialize, in precise) the commit object to the disk.
