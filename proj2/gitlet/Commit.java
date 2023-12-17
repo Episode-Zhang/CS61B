@@ -60,7 +60,7 @@ public class Commit implements Serializable {
      * @param stagingArea the file-blob map for this commit.
      * @return a Commit instance.
      */
-    public Commit createCommit(Commit parent, String message, StagingArea stagingArea) {
+    public static Commit createCommit(Commit parent, String message, StagingArea stagingArea) {
         // create parent of the commit instance
         ArrayList<Commit> parents = new ArrayList<>();
         parents.add(parent);
@@ -86,12 +86,25 @@ public class Commit implements Serializable {
         return commit;
     }
 
+    /** Factory method to create an initial commit object. */
+    public static Commit init() {
+        Commit commit = new Commit(
+                "-1", null, null,
+                "1970-01-01 00:00:00", "initial commit", null,
+                Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, "commits"));
+        commit.id = Utils.sha1(commit.id);
+        commit.save("root");
+        return commit;
+    }
+
     /** Using the commit message, timestamp, files to represent a commit object. */
     @Override
     public String toString() {
-        ArrayList<String> files = new ArrayList<>(fileBlobTable.keySet().size());
-        for (File file : fileBlobTable.keySet()) {
-            files.add(file.toString());
+        ArrayList<String> files = new ArrayList<>();
+        if (fileBlobTable != null) {
+            for (File file : fileBlobTable.keySet()) {
+                files.add(file.toString());
+            }
         }
         return String.format("commit message: %s\n" +
                 "commit time: %s\n" +
