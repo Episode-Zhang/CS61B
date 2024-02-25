@@ -42,9 +42,22 @@ public class Commit implements Serializable {
     /** Directory to save the commit, using relative path. */
     private File dest;
 
+    /** Root Directory to put all commits in .gitlet. */
+    private static final String COMMIT_ROOTDIR = "/commits/";
 
-    /** Constructor of the Commit, only used in the public method createCommit.
-     * @see #createCommit(Commit, String, StagingArea) */
+    /** Grabbing first two digits in a commit's sha1 code as name
+     *  of the directory in .gitlet/commits/ to save each commit. */
+    private static final int DIR_BOUND = 2;
+
+    /** Date parsing pattern. */
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+
+    /**
+     * Constructor of the Commit, only used in the factory method createFirstCommit and createNonFirstCommit.
+     * @see #createFirstCommit()
+     * @see #createNonFirstCommit(Commit, String)
+     */
     private Commit(String id, Commit child, ArrayList<Commit> parent,
                    String timestamp, String message, TreeMap<File, Blob> table, File dest) {
         this.id = id;
@@ -56,38 +69,61 @@ public class Commit implements Serializable {
         this.dest = dest;
     }
 
-    /**
-     * Factory method, which creates a new Commit.
-     *
-     * @param parent the parent commit of this commit.
-     * @param message the commit message.
-     * @param stagingArea the file-blob map for this commit.
-     * @return a Commit instance.
-     */
-    public static Commit createCommit(Commit parent, String message, StagingArea stagingArea) {
-        // common variables for both initial commit and non-initial commit
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        final int DIR_BOUND = 2;
-        final String COMMIT_ROOTDIR = "/commits/";
-        // create the initial commit
-        if (stagingArea == null) {
-            // id
-            final String INIT_ID = "-1";
-            String sha1_id = Utils.sha1(INIT_ID);
-            // timestamp
-            String INIT_TIMEZONE = "UTC";
-            formatter.setTimeZone(TimeZone.getTimeZone(INIT_TIMEZONE));
-            String timestamp = formatter.format(new Date(0));
-            // dest
-            String commitDir = COMMIT_ROOTDIR;
-            String commitName = "root";
-            File commitDest = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, commitDir);
-            // create init commit
-            Commit commit = new Commit(sha1_id, null, null, timestamp, message, null, commitDest);
-            commit.save(commitName);
-            return commit;
+    /** Get the child commit of this commit. */
+    public Commit getChild() {
+        return this.child;
+    }
+
+    /** Factory method to create an initial commit object. */
+    public static Commit init() {
+        return createFirstCommit();
+    }
+
+    /** Create a child commit linked to this commit. */
+    public Commit createChildCommit(String message) {
+        return createNonFirstCommit(this, message);
+    }
+
+    /** Using the commit message, timestamp, files to represent a commit object. */
+    @Override
+    public String toString() {
+        ArrayList<String> files = new ArrayList<>();
+        if (fileBlobTable != null) {
+            for (File file : fileBlobTable.keySet()) {
+                files.add(file.toString().replace(Helper.ROOT_DIR, ""));
+            }
         }
-        // create a non-initial commit
+        return String.format("commit message: %s\n" +
+                "commit time: %s\n" +
+                "commit files: %s\n",
+                message, timestamp, String.join(", ", files)
+        );
+    }
+
+    /** Factory method. To create the initial commit. */
+    private static Commit createFirstCommit() {
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+        // id
+        final String INIT_ID = "-1";
+        String sha1_id = Utils.sha1(INIT_ID);
+        // timestamp
+        final String INIT_TIMEZONE = "UTC";
+        formatter.setTimeZone(TimeZone.getTimeZone(INIT_TIMEZONE));
+        String timestamp = formatter.format(new Date(0));
+        // dest
+        String commitName = "root";
+        File commitDest = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, COMMIT_ROOTDIR);
+        // create init commit
+        Commit commit = new Commit(sha1_id, null, null,
+                timestamp, "initial commit", null, commitDest);
+        commit.save(commitName);
+        return commit;
+    }
+
+    /** Factory method. To create a non-initial commit. */
+    private static Commit createNonFirstCommit(Commit parent, String message) {
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+        StagingArea stagingArea = StagingArea.getInstance();
         // parent
         ArrayList<Commit> parents = new ArrayList<>();
         parents.add(parent);
@@ -112,27 +148,6 @@ public class Commit implements Serializable {
         return commit;
     }
 
-    /** Factory method to create an initial commit object. */
-    public static Commit init() {
-        return createCommit(null, "initial commit", null);
-    }
-
-    /** Using the commit message, timestamp, files to represent a commit object. */
-    @Override
-    public String toString() {
-        ArrayList<String> files = new ArrayList<>();
-        if (fileBlobTable != null) {
-            for (File file : fileBlobTable.keySet()) {
-                files.add(file.toString().replace(Helper.ROOT_DIR, ""));
-            }
-        }
-        return String.format("commit message: %s\n" +
-                "commit time: %s\n" +
-                "commit files: %s\n",
-                message, timestamp, String.join(", ", files)
-        );
-    }
-
     /** Set child commit to this corresponding to the given commit. */
     private void setChild(Commit childCommit) {
         child = childCommit;
@@ -142,7 +157,8 @@ public class Commit implements Serializable {
      * save(or serialize, in precise) the commit object to the disk.
      *
      * @param path the path to save the commit, using relative path.
-     * @return the saved path of the commit object. */
+     * @return the saved path of the commit object.
+     */
     private String save(String path) {
         if (!dest.exists()) {
             dest.mkdirs();

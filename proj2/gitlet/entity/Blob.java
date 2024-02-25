@@ -26,6 +26,13 @@ public class Blob implements Serializable {
     /** Directory to save the blob, using relative path. */
     private File dest;
 
+    /** Root Directory to put all blobs in .gitlet. */
+    private static final String BLOB_ROOTDIR = "/blobs/";
+
+    /** Grabbing first two digits in a blob's sha1 code as name
+     *  of the directory in .gitlet/blobs/ to save each blob. */
+    private static final int DIR_BOUND = 2;
+
 
     /** Constructor of the Blob, only used in the public method createBlob.
      * @see #createBlob(String) */
@@ -55,9 +62,8 @@ public class Blob implements Serializable {
         String sha1Hash = Utils.sha1(fileContent);
         // use the first 2 bytes of the sha1 hash as the blob saving directory
         // and the last 38 bytes as the blob's file name on disk.
-        final int dirBound = 2;
-        final String blobDir = "blobs/" + sha1Hash.substring(0, dirBound);
-        final String blobName = sha1Hash.substring(dirBound);
+        final String blobDir = BLOB_ROOTDIR + sha1Hash.substring(0, DIR_BOUND);
+        final String blobName = sha1Hash.substring(DIR_BOUND);
         File blobDest = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, blobDir);
         // As long as the blob created, it will be saved to the disk.
         Blob blob = new Blob(sha1Hash, fileContent, blobDest);

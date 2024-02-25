@@ -32,12 +32,12 @@ public class testBlob {
     @Test
     public void testReadWithoutCwdMark() {
         // should print file contents
-        Helper.printBlobContent(".gitlet/blobs/18/3ba7a5395fb4dd0a1062fb04164577d7654b73");
+        Helper.printBlobContent(".gitlet/blobs/32/8a0927acbd3cc158bad216da5d734c52ed9565");
     }
 
     @Test
     public void testReadWithCwdMark() {
         // should print file contents
-        Helper.printBlobContent("./.gitlet/blobs/18/3ba7a5395fb4dd0a1062fb04164577d7654b73");
+        Helper.printBlobContent("./.gitlet/blobs/32/8a0927acbd3cc158bad216da5d734c52ed9565");
     }
 }

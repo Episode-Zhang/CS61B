@@ -19,7 +19,7 @@ public class testCommit {
         stagingArea.add("./testRepo/Test.java");
         stagingArea.add("./testRepo/hi.txt");
         Commit ancestor = Commit.init();
-        Commit commit = Commit.createCommit(ancestor, "test commit", stagingArea);
-        System.out.println(commit);
+        ancestor.createChildCommit("test commit");
+        System.out.println(ancestor.getChild());
     }
 }

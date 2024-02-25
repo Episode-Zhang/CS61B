@@ -78,6 +78,7 @@ public class StagingArea implements Serializable {
         filePath = filePath.replace("./", "");
         Blob blob = Blob.createBlob(filePath);
         // defensive check
+        // TODO check the version of the file.
         if (blob != null) {
             File file = Helper.getFileByPath(filePath);
             fileBlobTable.put(file, blob);
