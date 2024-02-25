@@ -2,20 +2,20 @@ package testing.unittest;
 
 
 import gitlet.entity.StagingArea;
-import gitlet.utils.Helper;
+import gitlet.exception.GitletException;
 import org.junit.Test;
 
 public class testStagingArea {
 
     @Test
-    public void testAddWithoutCwdMark() throws Helper.FileDoesNotExistException {
+    public void testAddWithoutCwdMark() throws GitletException {
         StagingArea stagingArea = StagingArea.getInstance();
         String filePath = "testRepo/Test.java";
         stagingArea.add(filePath);
     }
 
     @Test
-    public void testAddWithCwdMark() throws Helper.FileDoesNotExistException {
+    public void testAddWithCwdMark() throws GitletException {
         StagingArea stagingArea = StagingArea.getInstance();
         String filePath = "./testRepo/Test.java";
         stagingArea.add(filePath);
@@ -29,7 +29,7 @@ public class testStagingArea {
     }
 
     @Test
-    public void testAddMultipleFiles() throws Helper.FileDoesNotExistException {
+    public void testAddMultipleFiles() throws GitletException {
         StagingArea stagingArea = StagingArea.getInstance();
         String filePath1 = "./testRepo/Test.java";
         String filePath2 = "./testRepo/hi.txt";
@@ -37,8 +37,8 @@ public class testStagingArea {
         stagingArea.add(filePath2);
     }
 
-    @Test(expected = Helper.FileDoesNotExistException.class)
-    public void testAddNonExistingFile() throws Helper.FileDoesNotExistException {
+    @Test(expected = GitletException.class)
+    public void testAddNonExistingFile() throws GitletException {
         StagingArea stagingArea = StagingArea.getInstance();
         String filePath = "./testRepo/Tast.java";
         stagingArea.add(filePath);

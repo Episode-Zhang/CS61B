@@ -1,6 +1,7 @@
 package gitlet.entity;
 
 
+import gitlet.exception.GitletException;
 import gitlet.utils.Helper;
 import gitlet.utils.Utils;
 
@@ -39,9 +40,9 @@ public class Blob implements Serializable {
      *
      * @param filePath The path of the given file, using relative path.
      * @return The blob object corresponding to the given file.
-     * @throws Helper.FileDoesNotExistException if the file does not exist.
+     * @throws GitletException if the file does not exist.
      */
-    public static Blob createBlob(String filePath) throws Helper.FileDoesNotExistException {
+    public static Blob createBlob(String filePath) throws GitletException {
         // check if the repository has been initialized
         if (!Helper.repoInitialized()) {
             System.out.println("Not in an initialized Gitlet directory.");

@@ -1,6 +1,7 @@
 package gitlet.entity;
 
 
+import gitlet.exception.GitletException;
 import gitlet.utils.Helper;
 import gitlet.utils.Utils;
 
@@ -70,9 +71,9 @@ public class StagingArea implements Serializable {
      *
      * @param filePath the relative path to the file to be stored.
      * @return true if the file was successfully stored, false otherwise.
-     * @throws Helper.FileDoesNotExistException if the blob creation failed.
+     * @throws GitletException if the blob creation failed.
      */
-    public boolean add(String filePath) throws Helper.FileDoesNotExistException {
+    public boolean add(String filePath) throws GitletException {
         // TODO Maybe should check nested files in a directory, aka, add a "directory".
         filePath = filePath.replace("./", "");
         Blob blob = Blob.createBlob(filePath);

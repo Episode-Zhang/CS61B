@@ -1,7 +1,7 @@
 package testing.unittest;
 
 import gitlet.entity.Commit;
-import gitlet.utils.Helper;
+import gitlet.exception.GitletException;
 import gitlet.entity.StagingArea;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ public class testCommit {
     }
 
     @Test
-    public void testCreateCommit() throws Helper.FileDoesNotExistException {
+    public void testCreateCommit() throws GitletException {
         StagingArea stagingArea = StagingArea.getInstance();
         stagingArea.add("./testRepo/Test.java");
         stagingArea.add("./testRepo/hi.txt");

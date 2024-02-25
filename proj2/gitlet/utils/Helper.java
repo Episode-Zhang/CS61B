@@ -2,6 +2,7 @@ package gitlet.utils;
 
 
 import gitlet.entity.Blob;
+import gitlet.exception.GitletException;
 
 import java.io.File;
 
@@ -12,15 +13,6 @@ import java.io.File;
  * @version 1.0
  */
 public class Helper {
-
-    /** Customized exception, will be used in Blob class for a blob's corresponding file doesn't exist.
-     * @see #getFileByPath(String) */
-    public static class FileDoesNotExistException extends Exception {
-        public FileDoesNotExistException(String msg) {
-            super(msg);
-        }
-    }
-
 
     /** Root directory of the working directory. */
     public static final String ROOT_DIR = System.getProperty("user.dir");
@@ -44,15 +36,15 @@ public class Helper {
      *
      * @param relativePath the relative path of the file.
      * @return File object.
-     * @throws FileDoesNotExistException if the file does not exist.
+     * @throws GitletException if the file does not exist.
      */
-    public static File getFileByPath(String relativePath) throws FileDoesNotExistException {
+    public static File getFileByPath(String relativePath) throws GitletException {
         final File file = Utils.join(Helper.ROOT_DIR, relativePath);
         final boolean fileExists = file.exists();
         if (!fileExists) {
             // This exception should be caught and handled by caller.
             // Finally, in the user level, any input from user should not cause any exception.
-            throw new FileDoesNotExistException("file doesn't exist, please check the given path.");
+            throw new GitletException("file doesn't exist, please check the given path.");
         }
         return file;
     }
