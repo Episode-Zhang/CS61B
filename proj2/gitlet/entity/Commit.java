@@ -50,7 +50,7 @@ public class Commit implements Serializable {
     private static final int DIR_BOUND = 2;
 
     /** Date parsing pattern. */
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 
     /**
@@ -74,9 +74,41 @@ public class Commit implements Serializable {
         return this.child;
     }
 
+    /** Get the sha1 hash id of this commit. */
+    public String getId() {
+        return this.id;
+    }
+
+    /** Get the timestamp string of this commit. */
+    public String getTimestamp() {
+        return this.timestamp;
+    }
+
+    /** Get the message of this commit. */
+    public String getMessage() {
+        return this.message;
+    }
+
+    /** Get the parent commits of this commit. */
+    public ArrayList<Commit> getParent() {
+        return this.parent;
+    }
+
     /** Factory method to create an initial commit object. */
     public static Commit init() {
         return createFirstCommit();
+    }
+
+    /**
+     * Read commit from disk.
+     *
+     * @param relativePath the relative path to the commit to be read, given the bash path is .gitlet.
+     * @return the corresponding commit object.
+     */
+    public static Commit load(String relativePath) {
+        File commitFile = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, relativePath);
+        Commit commit = Utils.readObject(commitFile, Commit.class);
+        return commit;
     }
 
     /** Create a child commit linked to this commit. */
