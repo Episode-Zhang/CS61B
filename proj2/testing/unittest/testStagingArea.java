@@ -1,8 +1,8 @@
 package testing.unittest;
 
 
-import gitlet.StagingArea;
-import gitlet.Helper;
+import gitlet.entity.StagingArea;
+import gitlet.utils.Helper;
 import org.junit.Test;
 
 public class testStagingArea {

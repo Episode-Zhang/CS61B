@@ -1,7 +1,7 @@
-package gitlet;
+package gitlet.entity;
 
 import java.io.File;
-import static gitlet.Utils.*;
+import static gitlet.utils.Utils.*;
 
 // TODO: any imports you need here
 

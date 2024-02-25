@@ -1,5 +1,8 @@
-package gitlet;
+package gitlet.entity;
 
+
+import gitlet.utils.Helper;
+import gitlet.utils.Utils;
 
 import java.io.File;
 import java.io.Serializable;
@@ -13,7 +16,7 @@ import java.text.SimpleDateFormat;
  * A commit represents a snapshot for those file in staging area,
  * which will be stored and record by linked structure.
  *
- * @author jeffery-zhang
+ * @author jeffrey-zhang
  * @version 1.0
  */
 public class Commit implements Serializable {

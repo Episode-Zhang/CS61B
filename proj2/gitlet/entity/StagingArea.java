@@ -1,5 +1,8 @@
-package gitlet;
+package gitlet.entity;
 
+
+import gitlet.utils.Helper;
+import gitlet.utils.Utils;
 
 import java.io.File;
 import java.io.Serializable;
@@ -11,7 +14,7 @@ import java.util.TreeMap;
  * This class uses the technique called "singleton pattern",
  * which limits the number of the existing instances and the method to get that only one instance.
  *
- * @author jeffery-zhang
+ * @author jeffrey-zhang
  * @version 1.0
  */
 public class StagingArea implements Serializable {

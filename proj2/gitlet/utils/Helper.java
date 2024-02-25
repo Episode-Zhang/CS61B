@@ -1,12 +1,14 @@
-package gitlet;
+package gitlet.utils;
 
+
+import gitlet.entity.Blob;
 
 import java.io.File;
 
 /**
  * Helper class, including some public methods shared between multiple classes.
  *
- * @author jeffery-zhang
+ * @author jeffrey-zhang
  * @version 1.0
  */
 public class Helper {
@@ -21,10 +23,10 @@ public class Helper {
 
 
     /** Root directory of the working directory. */
-    static final String ROOT_DIR = System.getProperty("user.dir");
+    public static final String ROOT_DIR = System.getProperty("user.dir");
 
     /** Directory of the repository, using relative path. */
-    static final String REPO_DIR = ".gitlet";
+    public static final String REPO_DIR = ".gitlet";
 
 
     /**

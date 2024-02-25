@@ -1,5 +1,8 @@
-package gitlet;
+package gitlet.entity;
 
+
+import gitlet.utils.Helper;
+import gitlet.utils.Utils;
 
 import java.io.File;
 import java.io.Serializable;
@@ -8,7 +11,7 @@ import java.io.Serializable;
  * A blob represents the state of a file.
  * Each blob has its unique sha1 hash id, and content of corresponding file.
  *
- * @author jeffery-zhang
+ * @author jeffrey-zhang
  * @version 1.0 2023-12-03
  */
 public class Blob implements Serializable {

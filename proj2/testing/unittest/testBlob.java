@@ -1,8 +1,8 @@
 package testing.unittest;
 
 
-import gitlet.Blob;
-import gitlet.Helper;
+import gitlet.entity.Blob;
+import gitlet.utils.Helper;
 import org.junit.Test;
 
 public class testBlob {

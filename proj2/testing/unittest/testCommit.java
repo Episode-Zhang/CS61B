@@ -1,8 +1,8 @@
 package testing.unittest;
 
-import gitlet.Commit;
-import gitlet.Helper;
-import gitlet.StagingArea;
+import gitlet.entity.Commit;
+import gitlet.utils.Helper;
+import gitlet.entity.StagingArea;
 import org.junit.Test;
 
 public class testCommit {
