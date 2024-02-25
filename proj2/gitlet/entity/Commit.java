@@ -1,15 +1,16 @@
 package gitlet.entity;
 
 
+import gitlet.pattern.Publisher;
+import gitlet.pattern.Subscriber;
 import gitlet.utils.Helper;
+import gitlet.utils.MemCache;
+import gitlet.utils.MessageType;
 import gitlet.utils.Utils;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.TreeMap;
+import java.util.*;
 import java.text.SimpleDateFormat;
 
 /**
@@ -19,7 +20,7 @@ import java.text.SimpleDateFormat;
  * @author jeffrey-zhang
  * @version 1.0
  */
-public class Commit implements Serializable {
+public class Commit implements Serializable, Publisher {
 
     /** Id of this blob, should be sha1 hash based on all blobs' id. */
     private String id;
@@ -43,7 +44,7 @@ public class Commit implements Serializable {
     private File dest;
 
     /** Root Directory to put all commits in .gitlet. */
-    private static final String COMMIT_ROOTDIR = "/commits/";
+    public static final String COMMIT_ROOTDIR = "/commits/";
 
     /** Grabbing first two digits in a commit's sha1 code as name
      *  of the directory in .gitlet/commits/ to save each commit. */
@@ -51,7 +52,6 @@ public class Commit implements Serializable {
 
     /** Date parsing pattern. */
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
 
     /**
      * Constructor of the Commit, only used in the factory method createFirstCommit and createNonFirstCommit.
@@ -67,6 +67,8 @@ public class Commit implements Serializable {
         this.message = message;
         this.fileBlobTable = table;
         this.dest = dest;
+        // add subscribers
+        this.subscribers.add(new Pointer());
     }
 
     /** Get the child commit of this commit. */
@@ -99,6 +101,11 @@ public class Commit implements Serializable {
         return createFirstCommit();
     }
 
+    /** Create a child commit linked to this commit. */
+    public Commit createChildCommit(String message) {
+        return createNonFirstCommit(this, message);
+    }
+
     /**
      * Read commit from disk.
      *
@@ -109,11 +116,6 @@ public class Commit implements Serializable {
         File commitFile = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, relativePath);
         Commit commit = Utils.readObject(commitFile, Commit.class);
         return commit;
-    }
-
-    /** Create a child commit linked to this commit. */
-    public Commit createChildCommit(String message) {
-        return createNonFirstCommit(this, message);
     }
 
     /** Using the commit message, timestamp, files to represent a commit object. */
@@ -149,6 +151,10 @@ public class Commit implements Serializable {
         Commit commit = new Commit(sha1_id, null, null,
                 timestamp, "initial commit", null, commitDest);
         commit.save(commitName);
+        // put this commit into MemCache
+        MemCache.getInstance().set("latestCommit", commit);
+        // notify all subscribers that a commit has been created
+        commit.notifySubscribers(MessageType.COMMIT);
         return commit;
     }
 
@@ -177,6 +183,10 @@ public class Commit implements Serializable {
         Commit commit = new Commit(commitId, null, parents, timestamp, message, fileBlobTable, commitDest);
         parent.setChild(commit);
         commit.save(commitName);
+        // put this commit into MemCache
+        MemCache.getInstance().set("latestCommit", commit);
+        // notify all subscribers that a commit has been created
+        commit.notifySubscribers(MessageType.COMMIT);
         return commit;
     }
 
@@ -197,7 +207,27 @@ public class Commit implements Serializable {
         }
         final File commit = Utils.join(dest, path);
         Utils.writeObject(commit, this);
-        final String blobPath = commit.toString().replace(Helper.ROOT_DIR, "");
-        return blobPath;
+        final String commitPath = commit.toString().replace(Helper.ROOT_DIR, "");
+        return commitPath;
+    }
+
+    /** Subscribers to Commit class. */
+    private transient List<Subscriber> subscribers = new ArrayList<>();
+
+    @Override
+    public void attach(Subscriber subscriber) {
+        subscribers.add(subscriber);
+    }
+
+    @Override
+    public void detach(Subscriber subscriber) {
+        subscribers.remove(subscriber);
+    }
+
+    @Override
+    public void notifySubscribers(MessageType message) {
+        for (Subscriber subscriber : subscribers) {
+            subscriber.updateSelf(message);
+        }
     }
 }
