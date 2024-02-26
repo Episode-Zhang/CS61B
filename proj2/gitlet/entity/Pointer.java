@@ -17,9 +17,33 @@ import java.io.File;
  */
 public class Pointer implements Subscriber {
 
-    public static Commit HEAD;
+    private static volatile Pointer instance;
 
-    public Pointer() {}
+    private Commit HEAD;
+
+    private Pointer() {
+        // load HEAD from the disk if it exists
+        final File HEAD_FILE = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, "HEAD");
+        if (HEAD_FILE.exists()) {
+            HEAD = Utils.readObject(HEAD_FILE, Commit.class);
+        }
+    }
+
+    public static Pointer getInstance() {
+        if (instance == null) {
+            synchronized (Pointer.class) {
+                if (instance == null) {
+                    instance = new Pointer();
+                }
+            }
+        }
+        return instance;
+    }
+
+    /** Get the HEAD Pointer. */
+    public static Commit getHEAD() {
+        return Pointer.getInstance().HEAD;
+    }
 
     @Override
     public void subscribeTo(Publisher publisher) {
