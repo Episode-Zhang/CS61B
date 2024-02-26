@@ -8,7 +8,10 @@ import gitlet.utils.Utils;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Staging Area stores those files added but was not going to commit.
@@ -86,6 +89,27 @@ public class StagingArea implements Serializable {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Set corresponding file to be unstaged in staging area.
+     *
+     * @param filePath the relative path to the file that is supposed to be staged.
+     * @return true if the file was successfully set to be unstaged, otherwise, false.
+     */
+    public boolean remove(String filePath) {
+        filePath = filePath.replace("./", "");
+        File blobFile = Utils.join(Helper.ROOT_DIR, filePath);
+        if (!fileBlobTable.containsKey(blobFile)) {
+            return false;
+        }
+        fileBlobTable.remove(blobFile);
+        return true;
+    }
+
+    /** Get all files in the staging area. */
+    public List<File> getStagedFiles() {
+        return new ArrayList<>(fileBlobTable.keySet());
     }
 
     /** Moving contents in the fileBlob into another table. */
