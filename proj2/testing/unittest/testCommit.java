@@ -1,10 +1,12 @@
 package testing.unittest;
 
 import gitlet.entity.Commit;
+import gitlet.entity.Pointer;
 import gitlet.exception.GitletException;
 import gitlet.entity.StagingArea;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Date;
 
 public class testCommit {
@@ -27,8 +29,15 @@ public class testCommit {
 
     @Test
     public void testReadCommit() {
-        String filePath = "commits/b2/eaf1af628ac51458e1c5c1dd88152bfffe0095";
+        String filePath = "commits/d6/4aa51b7e5668a1f5401785c72d60bd177cb865";
         Commit commit = Commit.load(filePath);
         System.out.println(commit);
+    }
+
+    @Test
+    public void testCheckoutFileInHEAD() {
+        Commit HEAD = Pointer.getHEAD();
+        HEAD.checkout("/testRepo/Test.java");
+        System.out.println(StagingArea.getInstance().getStagedFiles());
     }
 }

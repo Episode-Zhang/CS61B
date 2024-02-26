@@ -1,6 +1,7 @@
 package gitlet.entity;
 
 
+import gitlet.exception.GitletException;
 import gitlet.pattern.Publisher;
 import gitlet.pattern.Subscriber;
 import gitlet.utils.Helper;
@@ -68,7 +69,7 @@ public class Commit implements Serializable, Publisher {
         this.fileBlobTable = table;
         this.dest = dest;
         // add subscribers
-        this.subscribers.add(new Pointer());
+        this.subscribers.add(Pointer.getInstance());
     }
 
     /** Get the child commit of this commit. */
@@ -116,6 +117,22 @@ public class Commit implements Serializable, Publisher {
         File commitFile = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, relativePath);
         Commit commit = Utils.readObject(commitFile, Commit.class);
         return commit;
+    }
+
+    /**
+     * Retrieve file from this commit and put it back into the working directory.
+     * Set the checked-out file to be unstaged.
+     *
+     * @param relativeFilePath the name of the file to be put back into the working directory.
+     */
+    public void checkout(String relativeFilePath) {
+        File file = Utils.join(Helper.ROOT_DIR, relativeFilePath);
+        if (!fileBlobTable.containsKey(file)) {
+            throw new GitletException("File does not exist in that commit.");
+        }
+        Blob blob = fileBlobTable.get(file);
+        blob.restoreToFile();
+        StagingArea.getInstance().remove(relativeFilePath);
     }
 
     /** Using the commit message, timestamp, files to represent a commit object. */
