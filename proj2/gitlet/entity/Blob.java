@@ -23,6 +23,9 @@ public class Blob implements Serializable {
     /** Content of corresponding file.  */
     private String content;
 
+    /** Source directory of the file stored by this blob. */
+    private File src;
+
     /** Directory to save the blob, using relative path. */
     private File dest;
 
@@ -36,9 +39,10 @@ public class Blob implements Serializable {
 
     /** Constructor of the Blob, only used in the public method createBlob.
      * @see #createBlob(String) */
-    private Blob(String id, String content, File dest) {
+    private Blob(String id, String content, File src, File dest) {
         this.id = id;
         this.content = content;
+        this.src = src;
         this.dest = dest;
     }
 
@@ -66,7 +70,7 @@ public class Blob implements Serializable {
         final String blobName = sha1Hash.substring(DIR_BOUND);
         File blobDest = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR, blobDir);
         // As long as the blob created, it will be saved to the disk.
-        Blob blob = new Blob(sha1Hash, fileContent, blobDest);
+        Blob blob = new Blob(sha1Hash, fileContent, blobFile, blobDest);
         blob.save(blobName);
         return blob;
     }
@@ -80,6 +84,11 @@ public class Blob implements Serializable {
     /** Get the id of this Blob. */
     public String getId() {
         return id;
+    }
+
+    /** Restore the content of the blob to file. */
+    public void restoreToFile() {
+        Utils.writeContents(src, content);
     }
 
     /**

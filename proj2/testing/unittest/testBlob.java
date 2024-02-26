@@ -4,7 +4,10 @@ package testing.unittest;
 import gitlet.entity.Blob;
 import gitlet.exception.GitletException;
 import gitlet.utils.Helper;
+import gitlet.utils.Utils;
 import org.junit.Test;
+
+import java.io.File;
 
 public class testBlob {
 
@@ -32,12 +35,20 @@ public class testBlob {
     @Test
     public void testReadWithoutCwdMark() {
         // should print file contents
-        Helper.printBlobContent(".gitlet/blobs/32/8a0927acbd3cc158bad216da5d734c52ed9565");
+        Helper.printBlobContent(".gitlet/blobs/85/9c7220e246737ebb8b79bd7160e61a41ad5abf");
     }
 
     @Test
     public void testReadWithCwdMark() {
         // should print file contents
-        Helper.printBlobContent("./.gitlet/blobs/32/8a0927acbd3cc158bad216da5d734c52ed9565");
+        Helper.printBlobContent("./.gitlet/blobs/85/9c7220e246737ebb8b79bd7160e61a41ad5abf");
+    }
+
+    @Test
+    public void testRestoreToFile() {
+        File blobFile = Utils.join(Helper.ROOT_DIR, Helper.REPO_DIR,
+                "/blobs/85/9c7220e246737ebb8b79bd7160e61a41ad5abf");
+        Blob blob = Utils.readObject(blobFile, Blob.class);
+        blob.restoreToFile();
     }
 }
