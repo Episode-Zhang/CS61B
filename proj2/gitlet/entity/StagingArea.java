@@ -8,10 +8,8 @@ import gitlet.utils.Utils;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * Staging Area stores those files added but was not going to commit.
@@ -31,7 +29,7 @@ public class StagingArea implements Serializable {
     private static final String serializedName = "StagingArea";
 
     /** The singleton instance of this class. */
-    private static StagingArea instance;
+    private static volatile StagingArea instance;
 
 
     /** Constructor of the Blob, only used in the public method getInstance.
@@ -53,17 +51,20 @@ public class StagingArea implements Serializable {
     /** The only one method to get the unique StagingArea instance, which associates with the table file on disk. */
     public static StagingArea getInstance() {
         if (instance == null) {
-            // initialize the instance
-            // read the fileBlobTable from the disk
-            File tableFile = Utils.join(Helper.REPO_DIR, serializedName);
-            if (!tableFile.exists()) {
-                instance = new StagingArea();
-                instance.save();
-            } else {
-                TreeMap<File, Blob> diskTable = Utils.readObject(tableFile, TreeMap.class);
-                instance = new StagingArea(diskTable);
+            synchronized (StagingArea.class) {
+                if (instance == null) {
+                    // initialize the instance
+                    // read the fileBlobTable from the disk
+                    File tableFile = Utils.join(Helper.REPO_DIR, serializedName);
+                    if (!tableFile.exists()) {
+                        instance = new StagingArea();
+                        instance.save();
+                    } else {
+                        TreeMap<File, Blob> diskTable = Utils.readObject(tableFile, TreeMap.class);
+                        instance = new StagingArea(diskTable);
+                    }
+                }
             }
-            return instance;
         }
         return instance;
     }
