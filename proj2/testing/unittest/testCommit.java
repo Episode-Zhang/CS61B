@@ -1,13 +1,14 @@
 package testing.unittest;
 
 import gitlet.entity.Commit;
-import gitlet.entity.Pointer;
+import gitlet.entity.Refs;
 import gitlet.exception.GitletException;
 import gitlet.entity.StagingArea;
+import gitlet.utils.Helper;
+import gitlet.utils.Utils;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Date;
 
 public class testCommit {
 
@@ -36,7 +37,7 @@ public class testCommit {
 
     @Test
     public void testCheckoutFileInHEAD() {
-        Commit HEAD = Pointer.getHEAD();
+        Commit HEAD = Refs.getInstance().getHEAD();
         HEAD.checkout("/testRepo/Test.java");
         System.out.println(StagingArea.getInstance().getStagedFiles());
     }

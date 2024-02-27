@@ -69,7 +69,7 @@ public class Commit implements Serializable, Publisher {
         this.fileBlobTable = table;
         this.dest = dest;
         // add subscribers
-        this.subscribers.add(Pointer.getInstance());
+        this.subscribers.add(Refs.getInstance());
     }
 
     /** Get the child commit of this commit. */
@@ -171,6 +171,7 @@ public class Commit implements Serializable, Publisher {
         // put this commit into MemCache
         MemCache.getInstance().set("latestCommit", commit);
         // notify all subscribers that a commit has been created
+        commit.notifySubscribers(MessageType.INIT);
         commit.notifySubscribers(MessageType.COMMIT);
         return commit;
     }
